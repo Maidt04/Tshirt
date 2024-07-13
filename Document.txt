@@ -1,0 +1,88 @@
+Đây là tài liệu hướng dẫn về các file trong dự án và cách chạy project :
+
+---
+**Note pakage**
+- **app.connect: dùng để connect với cơ sở dữ liệu
+- **app.model: dùng để khởi tạo các lớp
+- **app.service: dùng để viết hàm xử lý và viết câu truy vấn.
+
+**File MyDrawerBuilder.java**
+
+- **Mục đích:** Định nghĩa giao diện và hành vi của thanh điều hướng (drawer) cho ứng dụng.
+- **Cách sử dụng:** Sử dụng các thành phần giao diện để hiển thị các mục menu và các hành động tương ứng khi người dùng chọn.
+- **Cách chạy project:** Sử dụng để cấu hình và hiển thị thanh điều hướng trong ứng dụng chính.
+
+---
+
+**File Login.java**
+
+- **Mục đích:** Hiển thị giao diện đăng nhập cho người dùng.
+- **Cách sử dụng:** Nhập thông tin đăng nhập, xử lý đăng nhập và hiển thị giao diện chính khi đăng nhập thành công.
+- **Cách chạy project:** Hiển thị form đăng nhập và xử lý sự kiện khi người dùng thực hiện đăng nhập.
+
+---
+
+**File Main.java**
+
+- **Mục đích:** Chương trình chính của ứng dụng, khởi tạo giao diện và cấu hình các thành phần khác như thanh điều hướng và tabbed pane.
+- **Cách sử dụng:** Khởi tạo và hiển thị giao diện chính của ứng dụng, quản lý các tab và định hướng người dùng khi đăng nhập và đăng xuất.
+- **Đổi theme tại hàm main ở dòng FlatLightLaf.setup();  Thiết lập giao diện FlatMacDarkLaf hoặc FlatLightLaf .
+- **Cách chạy project:** Khởi động và quản lý các thành phần giao diện chính của ứng dụng.
+
+---
+
+**File PanelTabbed.java**
+
+- **Mục đích:** Định nghĩa và quản lý các tab trong ứng dụng.
+- **Cách sử dụng:** Thêm, xóa và điều hướng giữa các tab trong giao diện.
+- **Cách chạy project:** Quản lý các tab và hiển thị nội dung tương ứng khi người dùng chọn tab.
+
+---
+
+**File TabbedForm.java**
+
+- **Mục đích:** Định nghĩa các phương thức cơ bản cho các form trong tab.
+- **Cách sử dụng:** Mở, đóng và làm mới các form.
+- **Cách chạy project:** Quản lý và hiển thị nội dung của các form trong tabbed pane.
+
+---
+
+**File TabbedItem.java**
+
+- **Mục đích:** Định nghĩa các tab nhỏ trong tabbed pane.
+- **Cách sử dụng:** Hiển thị tên tab và nút đóng để đóng tab.
+- **Cách chạy project:** Quản lý và điều hướng giữa các tab con trong tabbed pane.
+
+---
+
+**File WindowsTabbed.java**
+
+- **Mục đích:** Quản lý và hiển thị thanh tab và các tab trong ứng dụng.
+- **Cách sử dụng:** Thêm, xóa và chuyển đổi giữa các tab, cài đặt và hiển thị thanh điều hướng.
+- **Cách chạy project:** Quản lý và điều hướng giữa các tab trong giao diện chính của ứng dụng.
+
+---
+
+**File FlatDarkLaf.properties**
+
+- **Mục đích:** Định nghĩa các thuộc tính cho giao diện chủ đề Flat Dark.
+- **Cách sử dụng:** Cấu hình các màu sắc và kiểu dáng cho các thành phần trong giao diện chủ đề.
+- **Cách chạy project:** Sử dụng để cài đặt giao diện chủ đề Flat Dark cho toàn bộ ứng dụng.
+
+---
+
+**File FlatLaf.properties**
+
+- **Mục đích:** Định nghĩa các thuộc tính cho giao diện chủ đề FlatLaf.
+- **Cách sử dụng:** Cấu hình các màu sắc, độ cong và kiểu dáng cho các thành phần trong giao diện chủ đề.
+- **Cách chạy project:** Sử dụng để cài đặt giao diện chủ đề FlatLaf cho toàn bộ ứng dụng.
+
+---
+
+**File FlatLightLaf.properties**
+
+- **Mục đích:** Định nghĩa các thuộc tính cho giao diện chủ đề Flat Light.
+- **Cách sử dụng:** Cấu hình các màu sắc và kiểu dáng cho các thành phần trong giao diện chủ đề.
+- **Cách chạy project:** Sử dụng để cài đặt giao diện chủ đề Flat Light cho toàn bộ ứng dụng.
+
+---
