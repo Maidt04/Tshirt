@@ -1748,7 +1748,7 @@ is divided into following sections:
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
-    <target depends="init,deps-clean,-do-clean,-post-clean" description="Clean build products." name="clean"/>
+    <target depends="init,deps-clean,-do-clean,-post-clean" description="Clean build ProductsModel." name="clean"/>
     <target name="-check-call-dep">
         <property file="${call.built.properties}" prefix="already.built."/>
         <condition property="should.call.dep">

@@ -21,7 +21,6 @@ import app.main.Main;
 import raven.swing.AvatarIcon;
 import app.tabbed.WindowsTabbed;
 
-
 public class MyDrawerBuilder extends SimpleDrawerBuilder { // Kế thừa từ SimpleDrawerBuilder để tạo drawer
 
     @Override
@@ -72,7 +71,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder { // Kế thừa từ S
                             WindowsTabbed.getInstance().addTab("Sell", new Sell()); // Mở tab Sell
                         } else if (index == 2) {
                             if (subIndex == 1) {
-                                WindowsTabbed.getInstance().addTab("Products", new Products()); // Mở tab Products
+                                WindowsTabbed.getInstance().addTab("ProductsModel", new Products()); // Mở tab Products
                             } else if (subIndex == 2) {
                                 WindowsTabbed.getInstance().addTab("Detail Product", new DetailProduct()); // Mở tab Detail Product
                             } else if (subIndex == 3) {
