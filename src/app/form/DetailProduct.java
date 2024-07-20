@@ -423,10 +423,10 @@ public final class DetailProduct extends TabbedForm {
         try {
             int soLuongTon = Integer.parseInt(soLuongTonStr);
 
-            // Kiểm tra số lượng tồn là số nguyên dương lớn hơn 0 và không vượt quá 999
-            if (soLuongTon <= 0 || soLuongTon > 999) {
+            // Kiểm tra số lượng tồn là số nguyên dương lớn hơn 0 và không vượt quá 1500
+            if (soLuongTon <= 0 || soLuongTon > 1500) {
                 Notifications.getInstance().show(Notifications.Type.INFO,
-                        "Số lượng tồn phải là số nguyên dương lớn hơn 0 và không vượt quá 999");
+                        "Số lượng tồn phải là số nguyên dương lớn hơn 0 và không vượt quá 1500");
                 txtSoLuong.requestFocus();
                 return false;
             }
@@ -459,9 +459,9 @@ public final class DetailProduct extends TabbedForm {
             return false;
         }
 
-        // Kiểm tra mô tả không vượt quá 255 ký tự
-        if (moTa.length() > 255) {
-            Notifications.getInstance().show(Notifications.Type.INFO, "Mô tả không được vượt quá 255 ký tự");
+        // Kiểm tra mô tả không vượt quá 500 ký tự
+        if (moTa.length() > 500) {
+            Notifications.getInstance().show(Notifications.Type.INFO, "Mô tả không được vượt quá 500 ký tự");
             txtMoTaCTSP.requestFocus();
             return false;
         }
@@ -520,8 +520,6 @@ public final class DetailProduct extends TabbedForm {
         btnUpdateCTSP = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         btnDeleteCTSP = new javax.swing.JButton();
-        btnXuatExcel = new javax.swing.JButton();
-        btnImportExcel = new javax.swing.JButton();
 
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Danh sách sản phẩm", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14))); // NOI18N
 
@@ -639,16 +637,16 @@ public final class DetailProduct extends TabbedForm {
                         .addGap(18, 18, 18)
                         .addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cboFilterSP, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cboFilterSP, 0, 246, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboFilterMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cboFilterMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cboFilterKichThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cboFilterChatLieu, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboFilterKichThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboFilterChatLieu, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboFilterThuongHieu, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboFilterThuongHieu, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cboFilterTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -668,8 +666,8 @@ public final class DetailProduct extends TabbedForm {
                     .addComponent(jLabel14)
                     .addComponent(cboFilterTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboFilterSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -683,6 +681,11 @@ public final class DetailProduct extends TabbedForm {
 
         txtMaCTSP.setEditable(false);
         txtMaCTSP.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtMaCTSP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMaCTSPActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Giá bán(VNĐ)");
@@ -715,7 +718,7 @@ public final class DetailProduct extends TabbedForm {
         txtMoTaCTSP.setRows(5);
         jScrollPane1.setViewportView(txtMoTaCTSP);
 
-        btnAddMauSac.setBackground(new java.awt.Color(0, 204, 204));
+        btnAddMauSac.setBackground(new java.awt.Color(51, 204, 255));
         btnAddMauSac.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddMauSac.setText("+");
         btnAddMauSac.addActionListener(new java.awt.event.ActionListener() {
@@ -724,7 +727,7 @@ public final class DetailProduct extends TabbedForm {
             }
         });
 
-        btnAddKichThuoc.setBackground(new java.awt.Color(0, 204, 204));
+        btnAddKichThuoc.setBackground(new java.awt.Color(51, 204, 255));
         btnAddKichThuoc.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddKichThuoc.setText("+");
         btnAddKichThuoc.addActionListener(new java.awt.event.ActionListener() {
@@ -733,7 +736,7 @@ public final class DetailProduct extends TabbedForm {
             }
         });
 
-        btnAddChatLieu.setBackground(new java.awt.Color(0, 204, 204));
+        btnAddChatLieu.setBackground(new java.awt.Color(51, 204, 255));
         btnAddChatLieu.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddChatLieu.setText("+");
         btnAddChatLieu.addActionListener(new java.awt.event.ActionListener() {
@@ -742,7 +745,7 @@ public final class DetailProduct extends TabbedForm {
             }
         });
 
-        btnAddThuongHieu.setBackground(new java.awt.Color(0, 204, 204));
+        btnAddThuongHieu.setBackground(new java.awt.Color(51, 204, 255));
         btnAddThuongHieu.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddThuongHieu.setText("+");
         btnAddThuongHieu.addActionListener(new java.awt.event.ActionListener() {
@@ -791,7 +794,7 @@ public final class DetailProduct extends TabbedForm {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
@@ -829,14 +832,14 @@ public final class DetailProduct extends TabbedForm {
                     .addComponent(btnAddKichThuoc)
                     .addComponent(btnAddChatLieu))
                 .addGap(27, 27, 27)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -858,23 +861,23 @@ public final class DetailProduct extends TabbedForm {
                             .addComponent(jLabel4)
                             .addComponent(jLabel7)
                             .addComponent(btnAddChatLieu)
-                            .addComponent(cboChatLieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtGiaBan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel8)
-                        .addComponent(btnAddThuongHieu)
-                        .addComponent(cboThuonHieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(53, Short.MAX_VALUE))
+                            .addComponent(cboChatLieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtGiaBan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel8)
+                                .addComponent(btnAddThuongHieu)
+                                .addComponent(cboThuonHieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane1))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Tương tác", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14))); // NOI18N
 
-        btnAddCTSP.setBackground(new java.awt.Color(0, 204, 51));
+        btnAddCTSP.setBackground(new java.awt.Color(51, 153, 255));
         btnAddCTSP.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnAddCTSP.setText("Thêm sản phẩm");
         btnAddCTSP.addActionListener(new java.awt.event.ActionListener() {
@@ -883,7 +886,7 @@ public final class DetailProduct extends TabbedForm {
             }
         });
 
-        btnUpdateCTSP.setBackground(new java.awt.Color(0, 153, 153));
+        btnUpdateCTSP.setBackground(new java.awt.Color(51, 153, 255));
         btnUpdateCTSP.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnUpdateCTSP.setText("Cập nhật sản phẩm");
         btnUpdateCTSP.addActionListener(new java.awt.event.ActionListener() {
@@ -892,7 +895,7 @@ public final class DetailProduct extends TabbedForm {
             }
         });
 
-        btnReset.setBackground(new java.awt.Color(153, 153, 153));
+        btnReset.setBackground(new java.awt.Color(51, 153, 255));
         btnReset.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnReset.setText("Làm mới");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
@@ -901,30 +904,12 @@ public final class DetailProduct extends TabbedForm {
             }
         });
 
-        btnDeleteCTSP.setBackground(new java.awt.Color(255, 0, 0));
+        btnDeleteCTSP.setBackground(new java.awt.Color(51, 153, 255));
         btnDeleteCTSP.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnDeleteCTSP.setText("Xóa sản phẩm");
         btnDeleteCTSP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteCTSPActionPerformed(evt);
-            }
-        });
-
-        btnXuatExcel.setBackground(new java.awt.Color(0, 204, 204));
-        btnXuatExcel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnXuatExcel.setText("Xuất Excel");
-        btnXuatExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXuatExcelActionPerformed(evt);
-            }
-        });
-
-        btnImportExcel.setBackground(new java.awt.Color(204, 204, 0));
-        btnImportExcel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnImportExcel.setText("Import Excel");
-        btnImportExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImportExcelActionPerformed(evt);
             }
         });
 
@@ -936,11 +921,9 @@ public final class DetailProduct extends TabbedForm {
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAddCTSP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnUpdateCTSP, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                    .addComponent(btnUpdateCTSP, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
                     .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnDeleteCTSP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnXuatExcel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnImportExcel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnDeleteCTSP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -954,47 +937,47 @@ public final class DetailProduct extends TabbedForm {
                 .addComponent(btnReset)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDeleteCTSP)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnXuatExcel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnImportExcel)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(458, Short.MAX_VALUE)
-                .addComponent(pagination1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(125, 125, 125))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(548, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(pagination1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(125, 125, 125))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 955, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, Short.MAX_VALUE)))
                     .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(671, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 441, Short.MAX_VALUE)
                 .addComponent(pagination1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(68, Short.MAX_VALUE)))
+                    .addContainerGap(43, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1240,18 +1223,14 @@ public final class DetailProduct extends TabbedForm {
         }
     }//GEN-LAST:event_btnDeleteCTSPActionPerformed
 
-    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnXuatExcelActionPerformed
-
-    private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnImportExcelActionPerformed
-
     private void tblSPCTMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSPCTMouseClicked
         index = tblSPCT.getSelectedRow();
         this.showData(index);
     }//GEN-LAST:event_tblSPCTMouseClicked
+
+    private void txtMaCTSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaCTSPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMaCTSPActionPerformed
 
     @Override
     public boolean formClose() {
@@ -1276,10 +1255,8 @@ public final class DetailProduct extends TabbedForm {
     private javax.swing.JButton btnAddMauSac;
     private javax.swing.JButton btnAddThuongHieu;
     private javax.swing.JButton btnDeleteCTSP;
-    private javax.swing.JButton btnImportExcel;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUpdateCTSP;
-    private javax.swing.JButton btnXuatExcel;
     private javax.swing.JComboBox<String> cboChatLieu;
     private javax.swing.JComboBox<String> cboFilterChatLieu;
     private javax.swing.JComboBox<String> cboFilterKichThuoc;

@@ -33,18 +33,18 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder { // Kế thừa từ S
     @Override
     public SimpleMenuOption getSimpleMenuOption() { // Phương thức ghi đè để lấy tùy chọn menu
         String menus[][] = { // Mảng chứa các menu và submenu
-            {"~MAIN~"},
-            {"Home"},
-            {"Sell"},
-            {"~WEB APP~"},
-            {"Product", "Products", "Detail Product", "Product Attributes"},
-            {"Bill"},
-            {"Voucher"},
-            {"Staff"},
-            {"Customer"},
-            {"~OTHER~"},
+            {"~TRANG CHÍNH~"},
+            {"Trang chủ"},
+            {"Bán"},
+            {"~ỨNG DỤNG~"},
+            {"Sản phẩm", "Sản phẩm", "Sản phẩm chi tiết", "Thuộc tính sản phẩm"},
+            {"Hóa đơn"},
+            {"Khuyến mãi"},
+            {"Quản lí nhân viên"},
+            {"Nhân viên"},
+            {"~KHÁC~"},
             {"Charts"},
-            {"Logout"}};
+            {"Đăng xuất"}};
 
         String icons[] = { // Mảng chứa các biểu tượng tương ứng với menu
             "home.svg",
@@ -66,25 +66,25 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder { // Kế thừa từ S
                     @Override
                     public void selected(MenuAction action, int index, int subIndex) {
                         if (index == 0) {
-                            WindowsTabbed.getInstance().addTab("Home", new Home()); // Mở tab Home
+                            WindowsTabbed.getInstance().addTab("Trang chủ", new Home()); // Mở tab Home
                         } else if (index == 1) {
-                            WindowsTabbed.getInstance().addTab("Sell", new Sell()); // Mở tab Sell
+                            WindowsTabbed.getInstance().addTab("Bán", new Sell()); // Mở tab Sell
                         } else if (index == 2) {
                             if (subIndex == 1) {
-                                WindowsTabbed.getInstance().addTab("ProductsModel", new Products()); // Mở tab Products
+                                WindowsTabbed.getInstance().addTab("Sản Phẩm", new Products()); // Mở tab Products
                             } else if (subIndex == 2) {
-                                WindowsTabbed.getInstance().addTab("Detail Product", new DetailProduct()); // Mở tab Detail Product
+                                WindowsTabbed.getInstance().addTab("Sản phẩm chi tiết", new DetailProduct()); // Mở tab Detail Product
                             } else if (subIndex == 3) {
-                                WindowsTabbed.getInstance().addTab("Product Attributes", new ProductAttributes()); // Mở tab Product Attributes
+                                WindowsTabbed.getInstance().addTab("Thuộc tính sản phẩm", new ProductAttributes()); // Mở tab Product Attributes
                             }
                         } else if (index == 3) {
-                            WindowsTabbed.getInstance().addTab("Bill", new Bill()); // Mở tab Bill
+                            WindowsTabbed.getInstance().addTab("Hóa đơn", new Bill()); // Mở tab Bill
                         } else if (index == 4) {
-                            WindowsTabbed.getInstance().addTab("Voucher", new Voucher()); // Mở tab Voucher
+                            WindowsTabbed.getInstance().addTab("Khuyến mãi", new Voucher()); // Mở tab Voucher
                         } else if (index == 5) {
-                            WindowsTabbed.getInstance().addTab("Staff", new Staff()); // Mở tab Staff
+                            WindowsTabbed.getInstance().addTab("Quản lí nhân viên", new Staff()); // Mở tab Staff
                         } else if (index == 6) {
-                            WindowsTabbed.getInstance().addTab("Customer", new Customer()); // Mở tab Customer
+                            WindowsTabbed.getInstance().addTab("Nhân viên", new Customer()); // Mở tab Customer
                         } else if (index == 7) {
                             WindowsTabbed.getInstance().addTab("Chart", new Chart()); // Mở tab Chart
                         } else if (index == 8) {
@@ -105,7 +105,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder { // Kế thừa từ S
     @Override
     public SimpleFooterData getSimpleFooterData() { // Phương thức ghi đè để lấy dữ liệu footer
         return new SimpleFooterData()
-                .setTitle("Project Shop Tshirt") // Thiết lập tiêu đề footer
+                .setTitle("Trang shop Tshirt") // Thiết lập tiêu đề footer
                 .setDescription("Version 1.1.0"); // Thiết lập mô tả phiên bản
     }
 
@@ -113,4 +113,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder { // Kế thừa từ S
     public int getDrawerWidth() { // Phương thức ghi đè để lấy chiều rộng drawer
         return 275; // Thiết lập chiều rộng drawer là 275
     }
+    //thư viện swing-glasspane-popup-1.3.0.jar với swing-toast-notifications-1.0.1.jar
+    // thư viện theme màu sắc alf flatfat
+    
 }

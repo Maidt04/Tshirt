@@ -149,7 +149,7 @@ public class Products extends TabbedForm {
             txtMoTa.requestFocus();
             return false;
         }
-
+       
         return true;
     }
 
@@ -261,18 +261,18 @@ public class Products extends TabbedForm {
                 .addGap(38, 38, 38)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(txtMaSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(txtTenSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(35, 35, 35))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(35, 35, 35))))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Danh sách sản phẩm", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14))); // NOI18N
@@ -360,13 +360,15 @@ public class Products extends TabbedForm {
                     .addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Cbo_TrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addGap(22, 22, 22)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createCompoundBorder(), "Tương tác", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14))); // NOI18N
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnAddSP.setBackground(new java.awt.Color(0, 153, 0));
+        btnAddSP.setBackground(new java.awt.Color(51, 153, 255));
         btnAddSP.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddSP.setText("Thêm sản phẩm");
         btnAddSP.addActionListener(new java.awt.event.ActionListener() {
@@ -374,8 +376,9 @@ public class Products extends TabbedForm {
                 btnAddSPActionPerformed(evt);
             }
         });
+        jPanel3.add(btnAddSP, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 28, 193, -1));
 
-        btnUpdateSP.setBackground(new java.awt.Color(0, 153, 153));
+        btnUpdateSP.setBackground(new java.awt.Color(51, 153, 255));
         btnUpdateSP.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnUpdateSP.setText("Cập nhật sản phẩm");
         btnUpdateSP.addActionListener(new java.awt.event.ActionListener() {
@@ -383,8 +386,9 @@ public class Products extends TabbedForm {
                 btnUpdateSPActionPerformed(evt);
             }
         });
+        jPanel3.add(btnUpdateSP, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 67, 193, -1));
 
-        btnReset.setBackground(new java.awt.Color(153, 153, 153));
+        btnReset.setBackground(new java.awt.Color(51, 153, 255));
         btnReset.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnReset.setText("Làm mới");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
@@ -392,8 +396,9 @@ public class Products extends TabbedForm {
                 btnResetActionPerformed(evt);
             }
         });
+        jPanel3.add(btnReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 112, 193, -1));
 
-        btnDeleteSP.setBackground(new java.awt.Color(255, 0, 0));
+        btnDeleteSP.setBackground(new java.awt.Color(51, 153, 255));
         btnDeleteSP.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnDeleteSP.setText("Xóa");
         btnDeleteSP.addActionListener(new java.awt.event.ActionListener() {
@@ -401,57 +406,27 @@ public class Products extends TabbedForm {
                 btnDeleteSPActionPerformed(evt);
             }
         });
+        jPanel3.add(btnDeleteSP, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 151, 193, -1));
 
-        btnHuySP.setBackground(new java.awt.Color(255, 153, 0));
+        btnHuySP.setBackground(new java.awt.Color(51, 153, 255));
         btnHuySP.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnHuySP.setText("Lưu trữ");
+        btnHuySP.setText("Ngừng hoạt động");
         btnHuySP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnHuySPActionPerformed(evt);
             }
         });
+        jPanel3.add(btnHuySP, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 193, -1));
 
-        btnKhoiPhuc.setBackground(new java.awt.Color(102, 102, 255));
+        btnKhoiPhuc.setBackground(new java.awt.Color(51, 153, 255));
         btnKhoiPhuc.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnKhoiPhuc.setText("Khôi phục");
+        btnKhoiPhuc.setText("Khôi phục hoạt động");
         btnKhoiPhuc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnKhoiPhucActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAddSP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnUpdateSP, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
-                    .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnDeleteSP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnHuySP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnKhoiPhuc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnAddSP)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnUpdateSP)
-                .addGap(18, 18, 18)
-                .addComponent(btnReset)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnDeleteSP)
-                .addGap(12, 12, 12)
-                .addComponent(btnKhoiPhuc)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                .addComponent(btnHuySP)
-                .addContainerGap())
-        );
+        jPanel3.add(btnKhoiPhuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 193, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -480,7 +455,7 @@ public class Products extends TabbedForm {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(pagination1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31))
         );
@@ -591,8 +566,8 @@ public class Products extends TabbedForm {
         if (rowDC >= 0) {
             String ID = tblSP.getValueAt(rowDC, 1).toString();
 
-            if (sprs.checkTonTaiSPCT(ID)) {
-                Notifications.getInstance().show(Notifications.Type.WARNING, "Không thể xóa sản phẩm này vì đang tồn tại sản phẩm chi tiết!");
+            if (sprs.checkTonTaiSPCT(ID)) { 
+                Notifications.getInstance().show(Notifications.Type.WARNING, "Không thể xóa sản phẩm này vì nó đang tồn tại trong sản phẩm chi tiết!");
                 return;
             }
 
