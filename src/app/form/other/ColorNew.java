@@ -8,6 +8,8 @@ import app.form.DetailProduct;
 import app.main.Main;
 import app.model.ColorModel;
 import app.service.ColorService;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import raven.toast.Notifications;
 
@@ -15,8 +17,10 @@ import raven.toast.Notifications;
  *
  * @author dungn
  */
-public class ColorNew extends javax.swing.JFrame {
-    private  ColorService msrs =   new ColorService();
+public class ColorNew extends javax.swing.JDialog {
+
+    private ColorService msrs = new ColorService();
+
     /**
      * Creates new form ColorNew
      */
@@ -25,8 +29,20 @@ public class ColorNew extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         setTitle("Form Color");
     }
+
+    private static boolean colorAdded = false;
+
+    public static boolean showDialog() {
+        ColorNew dialog = new ColorNew();
+        dialog.setModal(true); // Đảm bảo dialog là modal
+        dialog.setVisible(true);
+        boolean result = colorAdded;
+        colorAdded = false; // Reset lại sau khi đã sử dụng
+        return result;
+    }
+
     private boolean validateFields() {
-        String tenChatLieu = txtTenKichThuoc.getText().trim();
+        String tenChatLieu = txtTenTT.getText().trim();
         String moTa = txtMoTa.getText().trim();
 
         if (tenChatLieu.isEmpty()) {
@@ -39,12 +55,17 @@ public class ColorNew extends javax.swing.JFrame {
         }
 
         if (tenChatLieu.length() > 100) {
-            Notifications.getInstance().show(Notifications.Type.WARNING,"Tên màu sắc tối đa là 100 ký tự!");
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Tên màu sắc tối đa là 100 ký tự!");
             return false;
         }
 
         if (moTa.length() > 254) {
-            Notifications.getInstance().show(Notifications.Type.WARNING,"Mô tả tối đa là 254 ký tự!");
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Mô tả tối đa là 254 ký tự!");
+            return false;
+        }
+        if (msrs.checkTrungTen(txtTenTT.getText().trim())) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Tên thuộc tính đã tồn tại!");
+            txtTenTT.requestFocus();
             return false;
         }
 
@@ -62,7 +83,7 @@ public class ColorNew extends javax.swing.JFrame {
 
         btnMauSac = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtTenKichThuoc = new javax.swing.JTextField();
+        txtTenTT = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtMoTa = new javax.swing.JTextArea();
@@ -80,7 +101,7 @@ public class ColorNew extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Tên màu sắc:");
 
-        txtTenKichThuoc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTenTT.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Mô tả");
@@ -106,7 +127,7 @@ public class ColorNew extends javax.swing.JFrame {
                                 .addComponent(jLabel2)
                                 .addGap(54, 54, 54)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTenKichThuoc, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .addComponent(txtTenTT, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .addComponent(jScrollPane1))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -116,7 +137,7 @@ public class ColorNew extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtTenKichThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTenTT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(28, 28, 28)
@@ -133,11 +154,11 @@ public class ColorNew extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMauSacActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMauSacActionPerformed
-        String tenMauSac = txtTenKichThuoc.getText();
+        String tenMauSac = txtTenTT.getText();
         String moTa = txtMoTa.getText();
-        if (msrs.checkTrungTen(txtTenKichThuoc.getText().trim())) {
-            Notifications.getInstance().show(Notifications.Type.INFO,"Tên màu sắc đã tồn tại!");
-            txtTenKichThuoc.requestFocus();
+        if (msrs.checkTrungTen(txtTenTT.getText().trim())) {
+            Notifications.getInstance().show(Notifications.Type.INFO, "Tên màu sắc đã tồn tại!");
+            txtTenTT.requestFocus();
             return;
         }
         if (!validateFields()) {
@@ -148,11 +169,12 @@ public class ColorNew extends javax.swing.JFrame {
 
         if (msrs.insert(mauSac) > 0) {
 
-            Notifications.getInstance().show(Notifications.Type.SUCCESS,"Thêm thành công !");
-            
+            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Thêm thành công màu sắc mới!");
+            colorAdded = true;
+            this.dispose(); // Đóng form sau khi thêm thành công
 
         } else {
-            Notifications.getInstance().show(Notifications.Type.ERROR,"Thêm thất bại!");
+            Notifications.getInstance().show(Notifications.Type.ERROR, "Thêm thất bại!");
         }
     }//GEN-LAST:event_btnMauSacActionPerformed
 
@@ -197,6 +219,6 @@ public class ColorNew extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtMoTa;
-    private javax.swing.JTextField txtTenKichThuoc;
+    private javax.swing.JTextField txtTenTT;
     // End of variables declaration//GEN-END:variables
 }

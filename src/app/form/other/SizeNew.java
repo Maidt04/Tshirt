@@ -12,16 +12,29 @@ import raven.toast.Notifications;
  *
  * @author dungn
  */
-public class SizeNew extends javax.swing.JFrame {
+public class SizeNew extends javax.swing.JDialog {
 
     private SizeService kcrs = new SizeService();
+
     public SizeNew() {
         initComponents();
         this.setLocationRelativeTo(null);
         setTitle("Form Size");
     }
+
+    private static boolean sizeAdded = false;
+
+    public static boolean showDialog() {
+        SizeNew dialog = new SizeNew();
+        dialog.setModal(true); // Đảm bảo dialog là modal
+        dialog.setVisible(true);
+        boolean result = sizeAdded;
+        sizeAdded = false; // Reset lại sau khi đã sử dụng
+        return result;
+    }
+
     private boolean validateFields() {
-        String tenChatLieu = txtTenKichThuoc.getText().trim();
+        String tenChatLieu = txtTenTT.getText().trim();
         String moTa = txtMoTa.getText().trim();
 
         if (tenChatLieu.isEmpty()) {
@@ -29,7 +42,7 @@ public class SizeNew extends javax.swing.JFrame {
             return false;
         }
         if (moTa.isEmpty()) {
-            Notifications.getInstance().show(Notifications.Type.INFO,"Vui lòng nhập mô tả size!");
+            Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng nhập mô tả size!");
             return false;
         }
 
@@ -39,7 +52,12 @@ public class SizeNew extends javax.swing.JFrame {
         }
 
         if (moTa.length() > 254) {
-            Notifications.getInstance().show(Notifications.Type.INFO,"Mô tả tối đa là 254 ký tự!");
+            Notifications.getInstance().show(Notifications.Type.INFO, "Mô tả tối đa là 254 ký tự!");
+            return false;
+        }
+        if (kcrs.checkTrungTen(txtTenTT.getText().trim())) {
+            Notifications.getInstance().show(Notifications.Type.INFO, "Tên thuộc tính đã tồn tại!");
+            txtTenTT.requestFocus();
             return false;
         }
 
@@ -57,7 +75,7 @@ public class SizeNew extends javax.swing.JFrame {
 
         btnKichThuoc = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtTenKichThuoc = new javax.swing.JTextField();
+        txtTenTT = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtMoTa = new javax.swing.JTextArea();
@@ -75,7 +93,7 @@ public class SizeNew extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Tên size:");
 
-        txtTenKichThuoc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTenTT.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Mô tả");
@@ -101,7 +119,7 @@ public class SizeNew extends javax.swing.JFrame {
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTenKichThuoc, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .addComponent(txtTenTT, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .addComponent(jScrollPane1))))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
@@ -110,7 +128,7 @@ public class SizeNew extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtTenKichThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTenTT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -128,11 +146,11 @@ public class SizeNew extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnKichThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKichThuocActionPerformed
-       String tenKichCo = txtTenKichThuoc.getText();
+        String tenKichCo = txtTenTT.getText();
         String moTa = txtMoTa.getText();
-        if (kcrs.checkTrungTen(txtTenKichThuoc.getText().trim())) {
-            Notifications.getInstance().show(Notifications.Type.WARNING,"Tên size đã tồn tại!");
-            txtTenKichThuoc.requestFocus();
+        if (kcrs.checkTrungTen(txtTenTT.getText().trim())) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Tên size đã tồn tại!");
+            txtTenTT.requestFocus();
             return;
         }
         if (!validateFields()) {
@@ -143,10 +161,11 @@ public class SizeNew extends javax.swing.JFrame {
         SizeModel kichCo = new SizeModel(newID, tenKichCo, moTa);
 
         if (kcrs.insert(kichCo) > 0) {
-            Notifications.getInstance().show(Notifications.Type.WARNING, "Thêm thành công !");
-//            
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Thêm thành công kích thước mới !");
+            sizeAdded = true;
+            this.dispose();
         } else {
-            Notifications.getInstance().show(Notifications.Type.ERROR,"Thêm thất bại!");
+            Notifications.getInstance().show(Notifications.Type.ERROR, "Thêm thất bại!");
         }
     }//GEN-LAST:event_btnKichThuocActionPerformed
 
@@ -191,6 +210,6 @@ public class SizeNew extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtMoTa;
-    private javax.swing.JTextField txtTenKichThuoc;
+    private javax.swing.JTextField txtTenTT;
     // End of variables declaration//GEN-END:variables
 }

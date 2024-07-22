@@ -232,7 +232,7 @@ public final class DetailProduct extends TabbedForm {
         return ctsp;
     }
 
-    void Cbo_MauSac() {
+    public  void Cbo_MauSac() {
         List<ColorModel> listMS = msrs.getALLMauSac();
         String[] cbo = new String[listMS.size()];
         for (int i = 0; i < listMS.size(); i++) {
@@ -351,19 +351,48 @@ public final class DetailProduct extends TabbedForm {
     }
 
     void openMauSac() {
-        new ColorNew().setVisible(true);
+        boolean colorAdded = ColorNew.showDialog();
+        if (colorAdded) {
+            reloadDetailProduct();
+        }
+    }
+
+    private void reloadDetailProduct() {
+        // Lưu trạng thái hiện tại
+        int selectedRow = tblSPCT.getSelectedRow();
+        
+        String giaBan = txtGiaBan.getText();
+        String soLuongTon = txtSoLuong.getText();
+        String moTa =  txtMoTaCTSP.getText();
+        
+        // Reload dữ liệu
+        Cbo_MauSac();
+        Cbo_KichCo();
+        Cbo_SanPham();
+        Cbo_ChatLieu();
+        Cbo_ThuongHieu();
+        fillTable(ctsprp.getAllCTSP());
     }
 
     void openChatlieu() {
-        new MaterialNew().setVisible(true);
+        boolean materialAdded = MaterialNew.showDialog();
+        if (materialAdded) {
+            reloadDetailProduct();
+        }
     }
 
     void openThuonHieu() {
-        new BrandNew().setVisible(true);
+        boolean brandAdded = BrandNew.showDialog();
+        if (brandAdded) {
+            reloadDetailProduct();
+        }
     }
 
     void openKichThuoc() {
-        new SizeNew().setVisible(true);
+        boolean sizeAdded = SizeNew.showDialog();
+        if (sizeAdded) {
+            reloadDetailProduct();
+        }
     }
 
     public boolean validatef() {
@@ -1240,13 +1269,14 @@ public final class DetailProduct extends TabbedForm {
                 || !txtSoLuong.getText().trim().isEmpty()
                 || !txtTimKiem.getText().trim().isEmpty()) {
 
-            int opt = JOptionPane.showConfirmDialog(this, "Dữ liệu chưa được lưu, bạn có chắc chắn muốn đóng tab ?", "Close",JOptionPane.WARNING_MESSAGE ,JOptionPane.YES_NO_OPTION);
+            int opt = JOptionPane.showConfirmDialog(this, "Dữ liệu chưa được lưu, bạn có chắc chắn muốn đóng tab ?", "Close", JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
             return opt == JOptionPane.YES_OPTION;
         }
 
         // Nếu tất cả các trường đều rỗng, cho phép đóng mà không cần xác nhận
         return true;
     }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddCTSP;
