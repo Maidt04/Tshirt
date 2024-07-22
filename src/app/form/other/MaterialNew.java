@@ -12,9 +12,10 @@ import raven.toast.Notifications;
  *
  * @author dungn
  */
-public class MaterialNew extends javax.swing.JFrame {
+public class MaterialNew extends javax.swing.JDialog {
 
-     private MaterialService clrs = new MaterialService();
+    private MaterialService clrs = new MaterialService();
+
     /**
      * Creates new form MaterialNew
      */
@@ -23,14 +24,25 @@ public class MaterialNew extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         setTitle("Form Material");
     }
-    
+
+    private static boolean materialAdded = false;
+
+    public static boolean showDialog() {
+        MaterialNew dialog = new MaterialNew();
+        dialog.setModal(true); // Đảm bảo dialog là modal
+        dialog.setVisible(true);
+        boolean result = materialAdded;
+        materialAdded = false; // Reset lại sau khi đã sử dụng
+        return result;
+    }
+
     private boolean validateFields() {
-        String tenChatLieu = txtTenKichThuoc.getText().trim();
+        String tenChatLieu = txtTenTT.getText().trim();
         String moTa = txtMoTa.getText().trim();
 
         if (tenChatLieu.isEmpty()) {
-            Notifications.getInstance().show(Notifications.Type.INFO,"Vui lòng nhập tên chất liệu!");
-            txtTenKichThuoc.requestFocus();
+            Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng nhập tên chất liệu!");
+            txtTenTT.requestFocus();
             return false;
         }
         if (moTa.isEmpty()) {
@@ -41,13 +53,18 @@ public class MaterialNew extends javax.swing.JFrame {
 
         if (tenChatLieu.length() > 100) {
             Notifications.getInstance().show(Notifications.Type.WARNING, "Tên chất liệu tối đa là 100 ký tự!");
-            txtTenKichThuoc.requestFocus();
+            txtTenTT.requestFocus();
             return false;
         }
 
         if (moTa.length() > 254) {
             Notifications.getInstance().show(Notifications.Type.WARNING, "Mô tả tối đa là 254 ký tự!");
             txtMoTa.requestFocus();
+            return false;
+        }
+        if (clrs.checkTrungTen(txtTenTT.getText().trim())) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Tên thuộc tính đã tồn tại!");
+            txtTenTT.requestFocus();
             return false;
         }
 
@@ -67,7 +84,7 @@ public class MaterialNew extends javax.swing.JFrame {
         txtMoTa = new javax.swing.JTextArea();
         btnChatLieu = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtTenKichThuoc = new javax.swing.JTextField();
+        txtTenTT = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -87,7 +104,7 @@ public class MaterialNew extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Tên chất liệu:");
 
-        txtTenKichThuoc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTenTT.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Mô tả");
@@ -109,7 +126,7 @@ public class MaterialNew extends javax.swing.JFrame {
                                 .addComponent(jLabel2)
                                 .addGap(54, 54, 54)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTenKichThuoc, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .addComponent(txtTenTT, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .addComponent(jScrollPane1))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -119,7 +136,7 @@ public class MaterialNew extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtTenKichThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTenTT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(28, 28, 28)
@@ -136,11 +153,11 @@ public class MaterialNew extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnChatLieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChatLieuActionPerformed
-        String tenChatLieu = txtTenKichThuoc.getText();
+        String tenChatLieu = txtTenTT.getText();
         String moTa = txtMoTa.getText();
-        if (clrs.checkTrungTen(txtTenKichThuoc.getText().trim())) {
-            Notifications.getInstance().show(Notifications.Type.WARNING,"Tên chất liệu đã tồn tại!");
-            txtTenKichThuoc.requestFocus();
+        if (clrs.checkTrungTen(txtTenTT.getText().trim())) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Tên chất liệu đã tồn tại!");
+            txtTenTT.requestFocus();
             return;
         }
         if (!validateFields()) {
@@ -151,8 +168,9 @@ public class MaterialNew extends javax.swing.JFrame {
         MaterialModel chatLieu = new MaterialModel(newID, tenChatLieu, moTa);
 
         if (clrs.insert(chatLieu) > 0) {
-            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Thêm thành công !");
-//            Application.showForm(new FormSanPhamChiTiet());
+            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Thêm thành công chất liệu mới!");
+            materialAdded = true;
+            this.dispose();
         } else {
             Notifications.getInstance().show(Notifications.Type.ERROR, "Thêm thất bại!");
         }
@@ -199,6 +217,6 @@ public class MaterialNew extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtMoTa;
-    private javax.swing.JTextField txtTenKichThuoc;
+    private javax.swing.JTextField txtTenTT;
     // End of variables declaration//GEN-END:variables
 }

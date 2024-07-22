@@ -44,6 +44,10 @@ public class StaffModel {
         this.trangThai = trangThai;
     }
 
+    public StaffModel(String tenNV) {
+        this.hoTen = tenNV;
+    }
+
     public String getId() {
         return id;
     }

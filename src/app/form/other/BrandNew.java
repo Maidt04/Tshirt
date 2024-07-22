@@ -12,7 +12,7 @@ import raven.toast.Notifications;
  *
  * @author dungn
  */
-public class BrandNew extends javax.swing.JFrame {
+public class BrandNew extends javax.swing.JDialog {
 
     private BrandService thrs = new BrandService();
 
@@ -21,22 +21,32 @@ public class BrandNew extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         setTitle("Form Brand ");
     }
+    private static boolean brandAdded = false;
+
+    public static boolean showDialog() {
+        BrandNew dialog = new BrandNew();
+        dialog.setModal(true); // Đảm bảo dialog là modal
+        dialog.setVisible(true);
+        boolean result = brandAdded;
+        brandAdded = false; // Reset lại sau khi đã sử dụng
+        return result;
+    }
 
     private boolean validateFields() {
-        String tenChatLieu = txtTenKichThuoc.getText().trim();
+        String tenChatLieu = txtTenTT.getText().trim();
         String moTa = txtMoTa.getText().trim();
 
         if (tenChatLieu.isEmpty()) {
-            Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng nhập tên hãng!");
+            Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng nhập tên thương hiệu!");
             return false;
         }
         if (moTa.isEmpty()) {
-            Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng nhập mô tả hãng!");
+            Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng nhập mô tả thương hiệu!");
             return false;
         }
 
         if (tenChatLieu.length() > 100) {
-            Notifications.getInstance().show(Notifications.Type.WARNING, "Tên hãng tối đa là 100 ký tự!");
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Tên thương hiệu tối đa là 100 ký tự!");
             return false;
         }
 
@@ -44,6 +54,7 @@ public class BrandNew extends javax.swing.JFrame {
             Notifications.getInstance().show(Notifications.Type.WARNING, "Mô tả tối đa là 254 ký tự!");
             return false;
         }
+        
 
         return true;
     }
@@ -59,7 +70,7 @@ public class BrandNew extends javax.swing.JFrame {
 
         btnThuongHieu = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtTenKichThuoc = new javax.swing.JTextField();
+        txtTenTT = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtMoTa = new javax.swing.JTextArea();
@@ -77,7 +88,7 @@ public class BrandNew extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Tên thương hiệu:");
 
-        txtTenKichThuoc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTenTT.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Mô tả");
@@ -103,7 +114,7 @@ public class BrandNew extends javax.swing.JFrame {
                                 .addComponent(jLabel2)
                                 .addGap(54, 54, 54)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTenKichThuoc, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .addComponent(txtTenTT, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .addComponent(jScrollPane1))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -113,7 +124,7 @@ public class BrandNew extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtTenKichThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTenTT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(28, 28, 28)
@@ -130,11 +141,11 @@ public class BrandNew extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnThuongHieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThuongHieuActionPerformed
-        String tenTH = txtTenKichThuoc.getText();
+        String tenTH = txtTenTT.getText();
         String moTa = txtMoTa.getText();
-        if (thrs.checkTrungTen(txtTenKichThuoc.getText().trim())) {
-            Notifications.getInstance().show(Notifications.Type.INFO, "Tên hãng đã tồn tại!");
-            txtTenKichThuoc.requestFocus();
+        if (thrs.checkTrungTen(txtTenTT.getText().trim())) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Tên thương hiệu đã tồn tại!");
+            txtTenTT.requestFocus();
             return;
         }
         if (!validateFields()) {
@@ -144,7 +155,9 @@ public class BrandNew extends javax.swing.JFrame {
         BrandModel thuongHieu = new BrandModel(newID, tenTH, moTa);
 
         if (thrs.insert(thuongHieu) > 0) {
-            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Thêm thành công !");
+            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Thêm thành công thương hiệu mới!");
+            brandAdded = true;
+            this.dispose();
         } else {
             Notifications.getInstance().show(Notifications.Type.ERROR, "Thêm thất bại!");
         }
@@ -191,6 +204,6 @@ public class BrandNew extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtMoTa;
-    private javax.swing.JTextField txtTenKichThuoc;
+    private javax.swing.JTextField txtTenTT;
     // End of variables declaration//GEN-END:variables
 }

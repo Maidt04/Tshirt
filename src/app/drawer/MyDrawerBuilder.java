@@ -35,13 +35,13 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder { // Kế thừa từ S
         String menus[][] = { // Mảng chứa các menu và submenu
             {"~TRANG CHÍNH~"},
             {"Trang chủ"},
-            {"Bán"},
+            {"Bán hàng"},
             {"~ỨNG DỤNG~"},
             {"Sản phẩm", "Sản phẩm", "Sản phẩm chi tiết", "Thuộc tính sản phẩm"},
             {"Hóa đơn"},
-            {"Khuyến mãi"},
-            {"Quản lí nhân viên"},
+            {"Voucher"},
             {"Nhân viên"},
+            {"Khách hàng"},
             {"~KHÁC~"},
             {"Charts"},
             {"Đăng xuất"}};
@@ -68,7 +68,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder { // Kế thừa từ S
                         if (index == 0) {
                             WindowsTabbed.getInstance().addTab("Trang chủ", new Home()); // Mở tab Home
                         } else if (index == 1) {
-                            WindowsTabbed.getInstance().addTab("Bán", new Sell()); // Mở tab Sell
+                            WindowsTabbed.getInstance().addTab("Bán hàng", new Sell()); // Mở tab Sell
                         } else if (index == 2) {
                             if (subIndex == 1) {
                                 WindowsTabbed.getInstance().addTab("Sản Phẩm", new Products()); // Mở tab Products
@@ -80,11 +80,11 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder { // Kế thừa từ S
                         } else if (index == 3) {
                             WindowsTabbed.getInstance().addTab("Hóa đơn", new Bill()); // Mở tab Bill
                         } else if (index == 4) {
-                            WindowsTabbed.getInstance().addTab("Khuyến mãi", new Voucher()); // Mở tab Voucher
+                            WindowsTabbed.getInstance().addTab("Voucher", new Voucher()); // Mở tab Voucher
                         } else if (index == 5) {
-                            WindowsTabbed.getInstance().addTab("Quản lí nhân viên", new Staff()); // Mở tab Staff
+                            WindowsTabbed.getInstance().addTab("Nhân viên", new Staff()); // Mở tab Staff
                         } else if (index == 6) {
-                            WindowsTabbed.getInstance().addTab("Nhân viên", new Customer()); // Mở tab Customer
+                            WindowsTabbed.getInstance().addTab("Khách hàng", new Customer()); // Mở tab Customer
                         } else if (index == 7) {
                             WindowsTabbed.getInstance().addTab("Chart", new Chart()); // Mở tab Chart
                         } else if (index == 8) {

@@ -1,5 +1,5 @@
-﻿--CREATE DATABASE DUAN1_TEAM2;
---USE DUAN1_TEAM2;
+﻿--CREATE DATABASE DUAN1_TEAM6;
+--USE DUAN1_TEAM6;
 
 CREATE TABLE SANPHAM (
     ID VARCHAR(20) PRIMARY KEY,
@@ -174,8 +174,8 @@ VALUES ('VC001', N'Voucher Giảm 10%', 100, N'Giảm giá', 10.000, '2023-05-01
        ('VC002', N'Voucher Giảm 20%', 200, N'Giảm giá', 20.000, '2023-05-01 00:00:00', '2023-06-01 00:00:00', N'Giảm giá 20% cho toàn bộ sản phẩm', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đang hoạt động');
 
 INSERT INTO HOADON(ID, ID_NhanVien, ID_KhachHang, ID_Voucher, HinhThucThanhToan, TongTien, NgayTao, NgaySua, TrangThai)
-VALUES ('HD001', 'NV001', 'KH001', 'VC001', N'Thanh toán tiền mặt', 3000000, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán'),
-       ('HD002', 'NV001', 'KH002', 'VC002', N'Thanh toán tiền mặt', 5000000, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán');
+VALUES ('HD001', 'NV001', 'KH001', 'VC001', N'Tiền mặt', 3000000, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán'),
+       ('HD002', 'NV001', 'KH002', 'VC002', N'Chuyển khoản', 5000000, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán');
 
 INSERT INTO HOADONCHITIET(ID, ID_HoaDon, ID_SanPhamChiTiet, SoLuong, ThanhTien, NgayTao, NgaySua, TrangThai)
 VALUES ('HDCT001', 'HD001', 'SPCT001', 1, 1290000, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán'),
