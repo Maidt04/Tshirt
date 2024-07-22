@@ -28,10 +28,14 @@ public class Voucher extends TabbedForm {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 150, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     // End of variables declaration//GEN-END:variables
 }
