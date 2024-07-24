@@ -98,8 +98,7 @@ public class Bill extends TabbedForm {
         }
     }
 
-    // Biến để lưu trữ ID của hóa đơn được chọn
-    private String selectedHoaDonID;
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

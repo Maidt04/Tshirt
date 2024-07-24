@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 /**
  *
- * @author dungn
+ * @author ADMIN
  */
 public class BillDetailModel {
 
@@ -112,6 +112,10 @@ public class BillDetailModel {
 
     public ProductDetailModel getCtsp() {
         return ctsp;
+    }
+    
+    public void setDonGia(ProductDetailModel donGia) {
+        this.ctsp = donGia;
     }
 
     public int getSoLuong() {

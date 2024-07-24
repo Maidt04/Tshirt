@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  *
- * @author dungn
+ * @author ADMIN
  */
 public class BillModel {
     public String ID;
