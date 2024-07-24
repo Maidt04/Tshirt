@@ -101,7 +101,7 @@ public class Main extends javax.swing.JFrame {
         FlatRobotoFont.install(); // Cài đặt font Roboto
         FlatLaf.registerCustomDefaultsSource("app.themes"); // Đăng ký nguồn tùy chỉnh cho FlatLaf
         UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13)); // Đặt font mặc định cho ứng dụng
-        FlatMacDarkLaf.setup(); // Thiết lập giao diện FlatMacDarkLaf hoặc FlatLightLaf 
+        FlatLightLaf.setup(); // Thiết lập giao diện FlatMacDarkLaf hoặc FlatLightLaf 
         java.awt.EventQueue.invokeLater(() -> {
             main = new Main(); // Tạo đối tượng Main
             main.setVisible(true); // Hiển thị JFrame

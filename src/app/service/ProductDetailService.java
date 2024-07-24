@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  *
- * @author dungn
+ * @author ADMIN
  */
 public class ProductDetailService {
     Connection con = null;

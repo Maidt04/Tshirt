@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  *
- * @author dungn
+ * @author ADMIN
  */
 public class BrandService {
     Connection con = null;
