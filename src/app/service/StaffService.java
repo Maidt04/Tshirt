@@ -161,6 +161,20 @@ public class StaffService {
             return 0;
         }
     }
+  public boolean checklogin(String email , String matKhau){
+      String sql = "select Email , MatKhau from NhanVien where Email = ? and MatKhau= ?";
+        try(Connection conn = DBConnect.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1,email);
+            ps.setString(2, matKhau);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {                
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
+    }
 
     public int update(StaffModel staff, String id) {
         sql = "UPDATE NHANVIEN SET HoTen=?, DiaChi=?, SoDienThoai=?, Email=?, NamSinh=?, GioiTinh=?, ChucVu=?, MatKhau=?, NgaySua=CURRENT_TIMESTAMP WHERE ID=?";
