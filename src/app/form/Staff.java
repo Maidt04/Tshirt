@@ -347,7 +347,11 @@ public class Staff extends TabbedForm {
             }
         });
 
+<<<<<<< HEAD
         btnDiLam.setBackground(new java.awt.Color(51, 153, 255));
+=======
+        btnDiLam.setBackground(new java.awt.Color(102, 102, 255));
+>>>>>>> dev_mai
         btnDiLam.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnDiLam.setText("Đi làm");
         btnDiLam.addActionListener(new java.awt.event.ActionListener() {

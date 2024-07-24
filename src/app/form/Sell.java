@@ -318,7 +318,11 @@ public class Sell extends TabbedForm {
             }
         });
 
+<<<<<<< HEAD
         btnClear.setBackground(new java.awt.Color(51, 153, 255));
+=======
+        btnClear.setBackground(new java.awt.Color(0, 204, 0));
+>>>>>>> dev_mai
         btnClear.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/png/clean.png"))); // NOI18N
         btnClear.setText("Làm mới");
@@ -401,7 +405,11 @@ public class Sell extends TabbedForm {
             }
         });
 
+<<<<<<< HEAD
         btnDeleteGH.setBackground(new java.awt.Color(51, 153, 255));
+=======
+        btnDeleteGH.setBackground(new java.awt.Color(255, 51, 0));
+>>>>>>> dev_mai
         btnDeleteGH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnDeleteGH.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/png/trash.png"))); // NOI18N
         btnDeleteGH.setText("Xóa");
@@ -565,7 +573,11 @@ public class Sell extends TabbedForm {
         txtTimSDT.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtTimSDT.setToolTipText("Nhập số điện thoại khách hàng");
 
+<<<<<<< HEAD
         btnTimKiem.setBackground(new java.awt.Color(51, 153, 255));
+=======
+        btnTimKiem.setBackground(new java.awt.Color(0, 204, 204));
+>>>>>>> dev_mai
         btnTimKiem.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnTimKiem.setForeground(new java.awt.Color(255, 255, 255));
         btnTimKiem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/png/computer.png"))); // NOI18N
@@ -578,7 +590,11 @@ public class Sell extends TabbedForm {
         txtTenKH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtTenKH.setToolTipText("Nhập số điện thoại khách hàng");
 
+<<<<<<< HEAD
         btnOpenKH.setBackground(new java.awt.Color(51, 153, 255));
+=======
+        btnOpenKH.setBackground(new java.awt.Color(102, 102, 255));
+>>>>>>> dev_mai
         btnOpenKH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnOpenKH.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/png/customer.png"))); // NOI18N
         btnOpenKH.setText("Chọn");

@@ -3,6 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/E:/Tshirt/src/app/drawer/MyDrawerBuilder.java</file>
             <file>file:/E:/Tshirt/src/app/connect/DBConnect.java</file>
             <file>file:/E:/Tshirt/src/app/form/Home.java</file>
@@ -12,6 +13,40 @@
             <file>file:/E:/Tshirt/src/app/service/SellService.java</file>
             <file>file:/E:/Tshirt/QLkhachHang.java</file>
             <file>file:/E:/Tshirt/src/app/form/Customer.java</file>
+=======
+            <file>file:/E:/Tshirt/src/app/connect/DBConnect.java</file>
+            <file>file:/E:/Tshirt/src/app/service/BillService.java</file>
+            <file>file:/E:/Tshirt/src/app/service/SizeService.java</file>
+            <file>file:/E:/Tshirt/src/app/model/SizeModel.java</file>
+            <file>file:/E:/Tshirt/src/app/form/Bill.java</file>
+            <file>file:/E:/Tshirt/src/app/service/ColorService.java</file>
+            <file>file:/E:/Tshirt/src/app/model/BillDetailModel.java</file>
+            <file>file:/E:/Tshirt/src/app/model/BillModel.java</file>
+            <file>file:/E:/Tshirt/src/app/service/MaterialService.java</file>
+            <file>file:/E:/Tshirt/src/app/form/Staff.java</file>
+            <file>file:/E:/Tshirt/src/app/service/BrandService.java</file>
+            <file>file:/E:/Tshirt/src/app/model/ColorModel.java</file>
+            <file>file:/E:/Tshirt/src/app/form/Voucher.java</file>
+            <file>file:/E:/Tshirt/src/app/form/Sell.java</file>
+            <file>file:/E:/Tshirt/src/app/form/Chart.java</file>
+            <file>file:/E:/Tshirt/src/app/form/DetailProduct.java</file>
+            <file>file:/E:/Tshirt/src/app/model/BrandModel.java</file>
+            <file>file:/E:/Tshirt/src/app/model/CustomerModel.java</file>
+            <file>file:/E:/Tshirt/src/app/model/ProductDetailModel.java</file>
+            <file>file:/E:/Tshirt/src/app/form/Customer.java</file>
+            <file>file:/E:/Tshirt/src/app/service/ProductDetailService.java</file>
+            <file>file:/E:/Tshirt/src/app/service/BillDetailService.java</file>
+            <file>file:/E:/Tshirt/src/app/service/StaffService.java</file>
+            <file>file:/E:/Tshirt/src/app/model/ProductsModel.java</file>
+            <file>file:/E:/Tshirt/src/app/model/MaterialModel.java</file>
+            <file>file:/E:/Tshirt/src/app/form/Home.java</file>
+            <file>file:/E:/Tshirt/src/app/service/ProductsService.java</file>
+            <file>file:/E:/Tshirt/src/app/form/ProductAttributes.java</file>
+            <file>file:/E:/Tshirt/src/app/service/SellService.java</file>
+            <file>file:/E:/Tshirt/src/app/model/StaffModel.java</file>
+            <file>file:/E:/Tshirt/src/app/model/VoucherModer.java</file>
+            <file>file:/E:/Tshirt/src/app/form/Products.java</file>
+>>>>>>> dev_mai
         </group>
     </open-files>
 </project-private>
