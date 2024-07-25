@@ -23,7 +23,7 @@ public class VoucherModer {
     public String trangThai;
     private int STT;
 
-    public VoucherModer(String ID, String tenVoucher, Integer soLuong, String loaiVoucher, BigDecimal mucGiamGia, String moTa, Date ngayBatDau, Date ngayKetThuc, String trangThai, int STT) {
+    public VoucherModer(String ID, String tenVoucher, Integer soLuong, String loaiVoucher, BigDecimal mucGiamGia, String moTa, Date ngayBatDau, Date ngayKetThuc, String trangThai) {
         this.ID = ID;
         this.tenVoucher = tenVoucher;
         this.soLuong = soLuong;
@@ -33,7 +33,7 @@ public class VoucherModer {
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
         this.trangThai = trangThai;
-        this.STT = STT;
+        
     }
 
     public VoucherModer() {
@@ -137,4 +137,8 @@ public class VoucherModer {
             this.trangThai
         };
     }
+
+    
+
+    
 }

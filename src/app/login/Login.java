@@ -9,6 +9,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 import app.main.Main;
+import app.service.StaffService;
+import raven.toast.Notifications;
 
 public class Login extends JPanel { // Kế thừa JPanel để tạo giao diện đăng nhập
 
@@ -41,8 +43,25 @@ public class Login extends JPanel { // Kế thừa JPanel để tạo giao diệ
                 + "innerFocusWidth:0");
 
         cmdLogin.addActionListener((e) -> { // Thêm sự kiện cho nút đăng nhập
-            //  Thực hiện hành động đăng nhập tại đây
-            Main.main.showMainForm(); // Gọi phương thức hiển thị form chính sau khi đăng nhập
+              String email = txtUsername.getText();
+            String pass = new String(txtPassword.getPassword());
+            if (email.isEmpty() && pass.isEmpty()) {
+                Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng nhập tên đăng nhập và Mật Khẩu");
+            } else if (email.isEmpty()) {
+                Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng nhập tên đăng nhập");
+            } else if (pass.isEmpty()) {
+                Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng nhập mật khẩu.");
+            } else {
+                if (staffService.checklogin(txtUsername.getText(), txtPassword.getText())) {
+                    Notifications.getInstance().show(Notifications.Type.INFO, "Đăng Nhập Thành Công");
+                    Main.main.showMainForm(); // Gọi phương thức hiển thị form chính sau khi đăng nhập
+
+                } else {
+                    Notifications.getInstance().show(Notifications.Type.INFO, "Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.");
+
+                }
+            }
+            
         });
 
         txtUsername.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your username or email"); // Thiết lập văn bản gợi ý cho trường tên người dùng
@@ -73,4 +92,5 @@ public class Login extends JPanel { // Kế thừa JPanel để tạo giao diệ
     private JPasswordField txtPassword; // Khai báo biến cho trường nhập liệu mật khẩu
     private JCheckBox chRememberMe; // Khai báo biến cho checkbox "Remember me"
     private JButton cmdLogin; // Khai báo biến cho nút đăng nhập
+    private StaffService staffService = new StaffService();
 }
