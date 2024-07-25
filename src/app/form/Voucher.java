@@ -61,7 +61,7 @@ public class Voucher extends TabbedForm {
                 vcc.getTenVoucher(),
                 vcc.getSoLuong(),
                 vcc.getLoaiVoucher(),
-                vcc.getMucGiamGia(),
+                vcc.getMucGiamGia().stripTrailingZeros().toPlainString(),
                 vcc.getNgayBatDau(),
                 vcc.getNgayKetThuc(),
                 vcc.getMoTa(),
@@ -192,7 +192,10 @@ public class Voucher extends TabbedForm {
         voucher.setTenVoucher(txtTen.getText());
         voucher.setLoaiVoucher((String) comboxLoai.getSelectedItem());
         voucher.setSoLuong(Integer.parseInt(txtSoLuong.getText().trim()));
-        voucher.setMucGiamGia(new BigDecimal(txtMucGG.getText().trim()));
+       
+        BigDecimal mucgiamgia = new BigDecimal(txtMucGG.getText().trim()).stripTrailingZeros();
+        voucher.setMucGiamGia(mucgiamgia);
+                
         voucher.setMoTa(taMota.getText().trim());
         voucher.setNgayBatDau(new java.sql.Date(JDBD.getDate().getTime()));
         voucher.setNgayKetThuc(new java.sql.Date(jdKT.getDate().getTime()));
@@ -499,7 +502,7 @@ public class Voucher extends TabbedForm {
     void showdata(int index) {
         txtID.setText(tblvoucher.getValueAt(index, 1).toString().trim());
         txtTen.setText(tblvoucher.getValueAt(index, 2).toString().trim());
-        txtMucGG.setText(tblvoucher.getValueAt(index, 5).toString().trim());
+        txtMucGG.setText((String) tblvoucher.getValueAt(index, 5));
         txtSoLuong.setText(tblvoucher.getValueAt(index, 3).toString().trim());
         taMota.setText(tblvoucher.getValueAt(index, 8).toString().trim());
         String loaiVoucher = String.valueOf(tblvoucher.getValueAt(index, 4)).trim();
