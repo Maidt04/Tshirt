@@ -589,7 +589,7 @@ public class Staff extends TabbedForm {
     }//GEN-LAST:event_rdoNamActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        if (validateInput()) {
+         if (validateInput()) {
             // Kiểm tra ID đã tồn tại
             if (staffService.checkTrungMa(txtID2.getText())) {
                 Notifications.getInstance().show(Notifications.Type.WARNING, "Mã Nhân Viên đã tồn tại");

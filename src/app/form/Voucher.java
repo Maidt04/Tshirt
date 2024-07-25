@@ -28,7 +28,7 @@ public class Voucher extends TabbedForm {
     private DefaultTableModel dtmm;
     private VoucherService sreService;
     private int currentPage = 1;
-  private static final int RECORDS_PER_PAGE = 10;
+    private static final int RECORDS_PER_PAGE = 10;
 
     /**
      * Creates new form Voucher
@@ -79,18 +79,57 @@ public class Voucher extends TabbedForm {
         String mucGiamGia = txtMucGG.getText().trim();
         String moTa = taMota.getText().trim();
         String trangthai = comboxTrangThai.getSelectedItem().toString().trim();
+        String loaiVoucher = comboxLoai.getSelectedItem().toString().trim();
+//        BigDecimal giaTriPhanTram = new BigDecimal(mucGiamGia.trim());
+
+        Date NgayHoatDong = JDBD.getDate();
+        Date NgayKetThuc = jdKT.getDate();
         if (tenVC.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng nhập tên voucher");
             return false;
         }
-        if (tenVC.length() > 200 || soLuong.length() > 200 || mucGiamGia.length() > 200 || moTa.length() > 200) {
+        if (tenVC.length() > 200 || soLuong.length() > 200 || mucGiamGia.length() > 200) {
             Notifications.getInstance().show(Notifications.Type.WARNING, "Các trường thông tin không được vượt quá 200 ký tự");
             return false;
         }
-        
-        if( trangthai.equals("Tất cả")){
-           Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng Chọn Trạng Thái");
-           return false;
+        if (moTa.length() > 250) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Mô Tả không được vượt quá 200 ký tự");
+            return false;
+        }
+
+        try {
+            BigDecimal giaTriPhanTram = new BigDecimal(mucGiamGia.trim());
+
+            if (loaiVoucher.equals("Giảm theo phần trăm")) {
+                if (giaTriPhanTram.compareTo(BigDecimal.valueOf(100)) > 0) {
+
+                    Notifications.getInstance().show(Notifications.Type.WARNING, "Giảm Theo Phần trăm không được vượt quá 100");
+                    return false;
+                }
+            }
+        } catch (NumberFormatException e) {
+            Notifications.getInstance().show(Notifications.Type.ERROR, "Vui lòng nhập một số hợp lệ cho phần trăm giảm giá.");
+            return false;
+        }
+
+        try {
+            BigDecimal giaTriPhanTram = new BigDecimal(mucGiamGia.trim());
+
+            if (loaiVoucher.equals("Giảm theo giá tiền")) {
+                if (mucGiamGia.length() > 38) {
+
+                    Notifications.getInstance().show(Notifications.Type.WARNING, "Giảm Theo Giá tiền không được vượt quá 38 số");
+                    return false;
+                }
+            }
+        } catch (NumberFormatException e) {
+            Notifications.getInstance().show(Notifications.Type.ERROR, "Vui lòng nhập một số hợp lệ cho giảm giá.");
+            return false;
+        }
+
+        if (trangthai.equals("Tất cả")) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng Chọn Trạng Thái");
+            return false;
         }
         try {
             if (soLuong.isEmpty()) {
@@ -107,7 +146,9 @@ public class Voucher extends TabbedForm {
                 Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng nhập Muc giam gia");
                 return false;
             }
+
         } catch (NumberFormatException e) {
+
             Notifications.getInstance().show(Notifications.Type.WARNING, " Muc Giam gia phai la so");
             return false;
         }
@@ -116,24 +157,47 @@ public class Voucher extends TabbedForm {
             Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng nhập Mô tả");
             return false;
         }
+
+        if (NgayHoatDong != null && NgayKetThuc != null) {
+            if (NgayKetThuc.before(NgayHoatDong)) {
+
+                Notifications.getInstance().show(Notifications.Type.WARNING, " Ngày Kết Thúc không được Nhỏ Hơn hơn ngày Hoạt Động");
+                return false;
+            }
+        } else {
+
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng chọn đầy đủ ngày hoạt động và ngày kết thúc.");
+            return false;
+        }
+
+        if (NgayHoatDong != null && NgayKetThuc != null) {
+            if (NgayHoatDong.after(NgayKetThuc)) {
+
+                Notifications.getInstance().show(Notifications.Type.WARNING, " Ngày hoạt động không được lớn hơn ngày kết thúc");
+                return false;
+            }
+        } else {
+
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng chọn đầy đủ ngày hoạt động và ngày kết thúc.");
+            return false;
+        }
+
         Notifications.getInstance().show(Notifications.Type.WARNING, "du lieu hop le");
         return true;
-        
-        
+
     }
 
     VoucherModer getVoucherFromInput() {
         VoucherModer voucher = new VoucherModer();
-        String loaiVoucher = "VND";
         voucher.setTenVoucher(txtTen.getText());
+        voucher.setLoaiVoucher((String) comboxLoai.getSelectedItem());
         voucher.setSoLuong(Integer.parseInt(txtSoLuong.getText().trim()));
-        voucher.setLoaiVoucher(loaiVoucher);
         voucher.setMucGiamGia(new BigDecimal(txtMucGG.getText().trim()));
         voucher.setMoTa(taMota.getText().trim());
         voucher.setNgayBatDau(new java.sql.Date(JDBD.getDate().getTime()));
         voucher.setNgayKetThuc(new java.sql.Date(jdKT.getDate().getTime()));
         voucher.setTrangThai((String) comboxTrangThai.getSelectedItem());
-
+        voucher.setLoaiVoucher((String) comboxLoai.getSelectedItem());
         return voucher;
     }
 
@@ -164,26 +228,19 @@ public class Voucher extends TabbedForm {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        JDBD = new com.toedter.calendar.JDateChooser();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblvoucher = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         taMota = new javax.swing.JTextArea();
-        jdKT = new com.toedter.calendar.JDateChooser();
         txtTen = new javax.swing.JTextField();
         txtSoLuong = new javax.swing.JTextField();
         txtMucGG = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         txtID = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        txtTimKiem = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         btnSua = new javax.swing.JButton();
         btnThem = new javax.swing.JButton();
@@ -191,11 +248,19 @@ public class Voucher extends TabbedForm {
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        comboxLoai = new javax.swing.JComboBox<>();
+        jdKT = new com.toedter.calendar.JDateChooser();
+        jLabel10 = new javax.swing.JLabel();
+        JDBD = new com.toedter.calendar.JDateChooser();
         jPanel3 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
         comboxTrangThai = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        txtTimKiem = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblvoucher = new javax.swing.JTable();
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        add(JDBD, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 40, -1, -1));
 
         jLabel1.setText("Tên voucher");
         add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, -1, -1));
@@ -206,34 +271,11 @@ public class Voucher extends TabbedForm {
         jLabel3.setText("Mức giảm Giá");
         add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, -1, -1));
 
-        tblvoucher.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8", "Title 9", "Title 10", "Title 11"
-            }
-        ));
-        tblvoucher.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblvoucherMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(tblvoucher);
-
-        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 317, 1200, 410));
-
         jLabel5.setText("Ngày bắt Đầu");
         add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 40, -1, -1));
 
         jLabel6.setText("Ngày Kết Thúc");
         add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, -1, -1));
-
-        jLabel7.setText("Trạng Thái");
-        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 270, -1, -1));
 
         jLabel8.setText("mô tả");
         add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 30, -1, -1));
@@ -242,8 +284,7 @@ public class Voucher extends TabbedForm {
         taMota.setRows(5);
         jScrollPane2.setViewportView(taMota);
 
-        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 50, -1, -1));
-        add(jdKT, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 90, -1, -1));
+        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 50, 590, 160));
         add(txtTen, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, 170, -1));
         add(txtSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, 170, -1));
 
@@ -257,6 +298,7 @@ public class Voucher extends TabbedForm {
         jLabel4.setText("id");
         add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
 
+        txtID.setEditable(false);
         txtID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         txtID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -264,17 +306,6 @@ public class Voucher extends TabbedForm {
             }
         });
         add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, 170, -1));
-
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setText("Tìm Kiếm");
-        add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 270, -1, -1));
-
-        txtTimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtTimKiemKeyPressed(evt);
-            }
-        });
-        add(txtTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 270, 220, -1));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -339,24 +370,126 @@ public class Voucher extends TabbedForm {
                 .addComponent(jButton4)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
-        add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 20, 140, 230));
+        add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1320, 10, 140, 240));
 
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 910, 240));
+
+        comboxLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Giảm theo phần trăm", "Giảm theo giá tiền" }));
+
+        jLabel10.setText("Loại Voucher");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(331, 331, 331)
+                .addComponent(jLabel10)
+                .addGap(18, 18, 18)
+                .addComponent(comboxLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(418, 418, 418)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JDBD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jdKT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(JDBD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(jdKT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboxLoai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)))
+        );
+
+        add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 1290, 240));
 
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 1200, 430));
 
-        comboxTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Đang Hoạt Động", "Không Hoạt Động" }));
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel9.setText("Tìm Kiếm");
+
+        comboxTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Đang Hoạt Động", "Ngưng Hoạt Động" }));
         comboxTrangThai.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboxTrangThaiActionPerformed(evt);
             }
         });
-        add(comboxTrangThai, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 270, 120, -1));
+
+        jLabel7.setText("Trạng Thái");
+
+        txtTimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTimKiemKeyPressed(evt);
+            }
+        });
+
+        tblvoucher.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8", "Title 9", "Title 10", "Title 11"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblvoucher.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblvoucherMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblvoucher);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(207, 207, 207)
+                .addComponent(jLabel9)
+                .addGap(42, 42, 42)
+                .addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(379, 379, 379)
+                .addComponent(jLabel7)
+                .addGap(28, 28, 28)
+                .addComponent(comboxTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1460, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(comboxTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 1470, 460));
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtMucGGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMucGGActionPerformed
@@ -369,6 +502,8 @@ public class Voucher extends TabbedForm {
         txtMucGG.setText(tblvoucher.getValueAt(index, 5).toString().trim());
         txtSoLuong.setText(tblvoucher.getValueAt(index, 3).toString().trim());
         taMota.setText(tblvoucher.getValueAt(index, 8).toString().trim());
+        String loaiVoucher = String.valueOf(tblvoucher.getValueAt(index, 4)).trim();
+        comboxLoai.setSelectedItem(loaiVoucher);
         String trangthai = String.valueOf(tblvoucher.getValueAt(index, 9)).trim();
         comboxTrangThai.setSelectedItem(trangthai);
         Object dateObj = tblvoucher.getValueAt(index, 6);
@@ -402,51 +537,11 @@ public class Voucher extends TabbedForm {
 
     }
     private void tblvoucherMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblvoucherMouseClicked
-//        int row1 = tblvoucher.getSelectedRow();
-//        if (row1 >= 0) {
-//        }
-//        if (evt.getClickCount() == 1) {
-//            txtID.setText(tblvoucher.getValueAt(row1, 1).toString().trim());
-//            txtTen.setText(tblvoucher.getValueAt(row1, 2).toString().trim());
-//            txtMucGG.setText(tblvoucher.getValueAt(row1, 5).toString().trim());
-//            txtSoLuong.setText(tblvoucher.getValueAt(row1, 3).toString().trim());
-//            taMota.setText(tblvoucher.getValueAt(row1, 8).toString().trim());
-//            String trangthai = String.valueOf(tblvoucher.getValueAt(row1, 9)).trim();
-//            comboxTrangThai.setSelectedItem(trangthai);
-//            Object dateObj = tblvoucher.getValueAt(row1, 6);
-//            try {
-//                if (dateObj instanceof java.sql.Date) {
-//                    JDBD.setDate(new java.util.Date(((java.sql.Date) dateObj).getTime()));
-//                } else if (dateObj instanceof java.util.Date) {
-//                    JDBD.setDate((java.util.Date) dateObj);
-//                } else {
-//                    JDBD.setDate(null);
-//                }
-//            } catch (IllegalArgumentException e) {
-//                e.printStackTrace();
-//                JDBD.setDate(null);
-//            }
-//
-//            // Xử lý ngày kết thúc
-//            Object dateObj2 = tblvoucher.getValueAt(row1, 7);
-//            try {
-//                if (dateObj2 instanceof java.sql.Date) {
-//                    jdKT.setDate(new java.util.Date(((java.sql.Date) dateObj2).getTime()));
-//                } else if (dateObj2 instanceof java.util.Date) {
-//                    jdKT.setDate((java.util.Date) dateObj2);
-//                } else {
-//                    jdKT.setDate(null);
-//                }
-//            } catch (IllegalArgumentException e) {
-//                e.printStackTrace();
-//                jdKT.setDate(null);
-//            }
-//
-//        }
 
-          int index = -1;
-          index =tblvoucher.getSelectedRow();
-          this.showdata(index);
+
+        int index = -1;
+        index = tblvoucher.getSelectedRow();
+        this.showdata(index);
     }//GEN-LAST:event_tblvoucherMouseClicked
 
     private void txtIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDActionPerformed
@@ -491,6 +586,11 @@ public class Voucher extends TabbedForm {
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         if (ValidateVoucher()) {
+            if (sreService.checkTrungID(txtID.getText())) {
+                Notifications.getInstance().show(Notifications.Type.WARNING, "Id Voucher đã tồn tại");
+                txtID.requestFocus();
+                return;
+            }
             String newID = sreService.getNewVoucherID();
             VoucherModer voucherModer = this.getVoucherFromInput();
             voucherModer.setID(newID);
@@ -560,7 +660,7 @@ public class Voucher extends TabbedForm {
             dtmm.addRow(vc.toData());
         }
     }
-    
+
     private void comboxTrangThaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboxTrangThaiActionPerformed
 //        String selectedTrangThai = (String) comboxTrangThai.getSelectedItem();
 //        List<VoucherModer> voucherModer;
@@ -584,10 +684,12 @@ public class Voucher extends TabbedForm {
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JComboBox<String> comboxLoai;
     private javax.swing.JComboBox<String> comboxTrangThai;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

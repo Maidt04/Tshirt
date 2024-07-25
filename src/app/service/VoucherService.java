@@ -66,7 +66,7 @@ public class VoucherService {
     // Phương thức cập nhật trạng thái voucher thành "Hoạt động" nếu ngày kết thúc lớn hơn hoặc bằng ngày hiện tại
     public int updateActiveVouchers() {
         int updatedCount = 0;
-        String sql = "UPDATE VOUCHER SET TrangThai = N'Hoạt động' WHERE NgayKetThuc >= GETDATE()";
+        String sql = "UPDATE VOUCHER SET TrangThai = N'Đang Hoạt động' WHERE NgayKetThuc >= GETDATE()";
         try {
             con = DBConnect.getConnection();
             ps = con.prepareStatement(sql);
@@ -291,7 +291,7 @@ public class VoucherService {
                 VoucherModer voucher = new VoucherModer(
                         rs.getString("Id"),
                         rs.getString("TenVoucher"),
-                        rs.getInt("soLuong"),
+                        rs.getInt("SoLuong"),
                         rs.getString("LoaiVoucher"),
                         rs.getBigDecimal("MucGiamGia"),
                         rs.getString("MoTa"),
@@ -301,12 +301,12 @@ public class VoucherService {
                 );
                 listVc.add(voucher);
             }
-           
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        } 
-        
+        }
+
         return listVc;
     }
 
@@ -364,6 +364,23 @@ public class VoucherService {
             }
         }
         return resultList;
+    }
+
+    public boolean checkTrungID(String id) {
+        sql = "SELECT COUNT(*) AS count FROM VOUCHER WHERE ID = ?";
+        try {
+            con = DBConnect.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("count");
+                return count > 0; // If count > 0, then ID already exists
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }
