@@ -29,20 +29,21 @@ import raven.toast.Notifications;
 public class Products extends TabbedForm {
 
     private DefaultTableModel model = new DefaultTableModel();
-    private ProductsService sprs = new ProductsService();
+    private final ProductsService sprs = new ProductsService();
 
     // Định nghĩa số lượng bản ghi hiển thị trên mỗi trang
     private static final int RECORDS_PER_PAGE = 20;
     private int currentPage = 1; // Trang hiện tại
 
-    /**
-     * Creates new form ProductsModel
-     */
+    @Override
+    public void fromRefresh() {
+        // Tải lại dữ liệu cho form 
+        init();
+    }
+
     public Products() {
         initComponents();
         init();
-        JComboBox<String> cboFilterTrangThai = new JComboBox<>(
-                new String[]{"Tất cả", "Đang kinh doanh", "Ngừng kinh doanh"});
     }
 
     void refreshData() {
@@ -85,26 +86,14 @@ public class Products extends TabbedForm {
 
     private void init() {
         // Cài đặt thanh phân trang
-        pagination1.addEventPagination(new EventPagination() {
-            @Override
-            public void pageChanged(int page) {
-                currentPage = page; // Cập nhật trang hiện tại khi chuyển trang
-                refreshData(); // Hiển thị dữ liệu cho trang mới
-            }
+        pagination1.addEventPagination((int page) -> {
+            currentPage = page; // Cập nhật trang hiện tại khi chuyển trang
+            refreshData(); // Hiển thị dữ liệu cho trang mới
         });
         pagination1.setPaginationItemRender(new PaginationItemRenderStyle1());
         refreshData(); // Hiển thị dữ liệu ban đầu khi khởi động
     }
 
-    void showData(int index) {
-        String ID = tblSP.getValueAt(index, 1).toString().trim();
-        String tenSP = tblSP.getValueAt(index, 2).toString().trim();
-        String moTa = tblSP.getValueAt(index, 3).toString().trim();
-
-        txtMaSP.setText(ID);
-        txtTenSP.setText(tenSP);
-        txtMoTa.setText(moTa);
-    }
 
     ProductsModel read() {
         ProductsModel sp = new ProductsModel();
@@ -149,7 +138,7 @@ public class Products extends TabbedForm {
             txtMoTa.requestFocus();
             return false;
         }
-       
+
         return true;
     }
 
@@ -165,21 +154,11 @@ public class Products extends TabbedForm {
 
         fillTable(filteredList);
     }
-
     /**
      * Lọc dữ liệu trong bảng theo biểu thức chính quy.
      *
      * @param query Biểu thức chính quy sử dụng để lọc dữ liệu.
      */
-    private void filter(String query) {
-        // Tạo một đối tượng TableRowSorter và gán cho bảng tblSP.
-        TableRowSorter<DefaultTableModel> tableRowSorter = new TableRowSorter<>(model);
-        tblSP.setRowSorter(tableRowSorter);
-
-        // Thiết lập bộ lọc sử dụng biểu thức chính quy và áp dụng cho TableRowSorter.
-        // Sử dụng biểu thức chính quy không phân biệt chữ hoa chữ thường
-        tableRowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + query));
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -510,49 +489,39 @@ public class Products extends TabbedForm {
         MessageAlerts.getInstance().showMessage("Xác nhận thêm sản phẩm",
                 "Bạn có chắc muốn thêm sản phẩm này?",
                 MessageAlerts.MessageType.SUCCESS,
-                MessageAlerts.YES_NO_OPTION,
-                new PopupCallbackAction() {
-            @Override
-            public void action(PopupController pc, int option) {
-                if (option == MessageAlerts.YES_OPTION) {
-                    if (sprs.insert(spmd) > 0) {
-                        Notifications.getInstance().show(Notifications.Type.SUCCESS, "Thêm thành công");
-                        refreshData();
-                        fillTable(sprs.getAllSP());
-                        clear();
-                    } else {
-                        Notifications.getInstance().show(Notifications.Type.ERROR, "Thêm thất bại");
+                MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                    if (option == MessageAlerts.YES_OPTION) {
+                        if (sprs.insert(spmd) > 0) {
+                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Thêm thành công");
+                            refreshData();
+                            fillTable(sprs.getAllSP());
+                            clear();
+                        } else {
+                            Notifications.getInstance().show(Notifications.Type.ERROR, "Thêm thất bại");
+                        }
                     }
-                }
-            }
         });
     }//GEN-LAST:event_btnAddSPActionPerformed
 
     private void btnUpdateSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateSPActionPerformed
         if (!checkForm()) {
-            return;
         } else {
             ProductsModel spmd = this.read();
             ProductsService sprs = new ProductsService();
-            int index = tblSP.getSelectedRow();
 
             MessageAlerts.getInstance().showMessage("Xác nhận cập nhật",
                     "Bạn có chắc muốn cập nhật thông tin sản phẩm này?",
                     MessageAlerts.MessageType.WARNING,
-                    MessageAlerts.YES_NO_OPTION,
-                    new PopupCallbackAction() {
-                @Override
-                public void action(PopupController pc, int option) {
-                    if (option == MessageAlerts.YES_OPTION) {
-                        if (sprs.update(spmd, spmd.getID()) > 0) {
-                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Cập nhật thông tin sản phẩm thành công");
-                            fillTable(sprs.getAllSP());
-                            clear();
-                        } else {
-                            Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật thất bại");
+                    MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                        if (option == MessageAlerts.YES_OPTION) {
+                            if (sprs.update(spmd, spmd.getID()) > 0) {
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS, "Cập nhật thông tin sản phẩm thành công");
+                                fillTable(sprs.getAllSP());
+                                clear();
+                            } else {
+                                Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật thất bại");
+                            }
                         }
-                    }
-                }
             });
         }
     }//GEN-LAST:event_btnUpdateSPActionPerformed
@@ -566,7 +535,7 @@ public class Products extends TabbedForm {
         if (rowDC >= 0) {
             String ID = tblSP.getValueAt(rowDC, 1).toString();
 
-            if (sprs.checkTonTaiSPCT(ID)) { 
+            if (sprs.checkTonTaiSPCT(ID)) {
                 Notifications.getInstance().show(Notifications.Type.WARNING, "Không thể xóa sản phẩm này vì nó đang tồn tại trong sản phẩm chi tiết!");
                 return;
             }
@@ -574,21 +543,17 @@ public class Products extends TabbedForm {
             MessageAlerts.getInstance().showMessage("Xác nhận xóa",
                     "Bạn có chắc muốn xóa sản phẩm này?",
                     MessageAlerts.MessageType.WARNING,
-                    MessageAlerts.YES_NO_OPTION,
-                    new PopupCallbackAction() {
-                @Override
-                public void action(PopupController pc, int option) {
-                    if (option == MessageAlerts.YES_OPTION) {
-                        if (sprs.delete(ID) > 0) {
-                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Xoá thành công sản phẩm!");
-                            refreshData();
-                            fillTable(sprs.getAllSP());
-                            clear();
-                        } else {
-                            Notifications.getInstance().show(Notifications.Type.ERROR, "Xoá thất bại");
+                    MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                        if (option == MessageAlerts.YES_OPTION) {
+                            if (sprs.delete(ID) > 0) {
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS, "Xoá thành công sản phẩm!");
+                                refreshData();
+                                fillTable(sprs.getAllSP());
+                                clear();
+                            } else {
+                                Notifications.getInstance().show(Notifications.Type.ERROR, "Xoá thất bại");
+                            }
                         }
-                    }
-                }
             });
         } else {
             Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng chọn một sản phẩm để xóa");
@@ -603,22 +568,18 @@ public class Products extends TabbedForm {
             MessageAlerts.getInstance().showMessage("Xác nhận ngừng kinh doanh",
                     "Bạn có chắc muốn ngừng kinh doanh sản phẩm này?",
                     MessageAlerts.MessageType.WARNING,
-                    MessageAlerts.YES_NO_OPTION,
-                    new PopupCallbackAction() {
-                @Override
-                public void action(PopupController pc, int option) {
-                    if (option == MessageAlerts.YES_OPTION) {
-                        ProductsModel sp = new ProductsModel();
-                        if (sprs.updateTrangThai(sp, ID) > 0) {
-                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã ngừng kinh doanh sản phẩm!");
-                            refreshData();
-                            fillTable(sprs.getAllSP());
-                            clear();
-                        } else {
-                            Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật trạng thái thất bại");
+                    MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                        if (option == MessageAlerts.YES_OPTION) {
+                            ProductsModel sp = new ProductsModel();
+                            if (sprs.updateTrangThai(sp, ID) > 0) {
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã ngừng kinh doanh sản phẩm!");
+                                refreshData();
+                                fillTable(sprs.getAllSP());
+                                clear();
+                            } else {
+                                Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật trạng thái thất bại");
+                            }
                         }
-                    }
-                }
             });
         } else {
             Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng chọn một sản phẩm để ngừng kinh doanh");
@@ -633,22 +594,18 @@ public class Products extends TabbedForm {
             MessageAlerts.getInstance().showMessage("Xác nhận khôi phục kinh doanh",
                     "Bạn có chắc muốn khôi phục trạng thái kinh doanh sản phẩm này?",
                     MessageAlerts.MessageType.WARNING,
-                    MessageAlerts.YES_NO_OPTION,
-                    new PopupCallbackAction() {
-                @Override
-                public void action(PopupController pc, int option) {
-                    if (option == MessageAlerts.YES_OPTION) {
-                        ProductsModel sp = new ProductsModel();
-                        if (sprs.updateActiveTrangThai(sp, ID) > 0) {
-                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã khôi phục trạng thái thành đã kinh doanh cho sản phẩm!");
-                            refreshData();
-                            fillTable(sprs.getAllSP());
-                            clear();
-                        } else {
-                            Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật trạng thái thất bại");
+                    MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                        if (option == MessageAlerts.YES_OPTION) {
+                            ProductsModel sp = new ProductsModel();
+                            if (sprs.updateActiveTrangThai(sp, ID) > 0) {
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã khôi phục trạng thái thành đã kinh doanh cho sản phẩm!");
+                                refreshData();
+                                fillTable(sprs.getAllSP());
+                                clear();
+                            } else {
+                                Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật trạng thái thất bại");
+                            }
                         }
-                    }
-                }
             });
         } else {
             Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng chọn một sản phẩm để khôi phục trạng thái");
@@ -661,7 +618,7 @@ public class Products extends TabbedForm {
                 || !txtTenSP.getText().trim().isEmpty()
                 || !txtMoTa.getText().trim().isEmpty()) {
 
-            int opt = JOptionPane.showConfirmDialog(this, "Dữ liệu chưa được lưu, bạn có chắc chắn muốn đóng tab ? ", "Close",JOptionPane.WARNING_MESSAGE ,JOptionPane.YES_NO_OPTION);
+            int opt = JOptionPane.showConfirmDialog(this, "Dữ liệu chưa được lưu, bạn có chắc chắn muốn đóng tab ? ", "Close", JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
             return opt == JOptionPane.YES_OPTION;
         }
 

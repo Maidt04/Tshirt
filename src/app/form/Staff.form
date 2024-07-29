@@ -343,7 +343,7 @@
             <Component class="javax.swing.JButton" name="btnThem">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="33" green="cc" red="0" type="rgb"/>
+                  <Color blue="ff" green="99" red="66" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Th&#xea;m Nh&#xe2;n Vi&#xea;n"/>
               </Properties>
@@ -354,7 +354,7 @@
             <Component class="javax.swing.JButton" name="btnSua">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="99" green="99" red="0" type="rgb"/>
+                  <Color blue="ff" green="99" red="66" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="S&#x1eed;a Nh&#xe2;n Vi&#xea;n"/>
               </Properties>
@@ -365,7 +365,7 @@
             <Component class="javax.swing.JButton" name="btnLamMoi">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="99" green="99" red="99" type="rgb"/>
+                  <Color blue="ff" green="99" red="66" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="L&#xe0;m M&#x1edb;i"/>
               </Properties>
@@ -376,7 +376,7 @@
             <Component class="javax.swing.JButton" name="btnNghiViec">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="0" green="0" red="ff" type="rgb"/>
+                  <Color blue="ff" green="99" red="66" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Ngh&#x1ec9; Vi&#x1ec7;c"/>
               </Properties>
@@ -387,7 +387,7 @@
             <Component class="javax.swing.JButton" name="btnDelete">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="cc" green="cc" red="0" type="rgb"/>
+                  <Color blue="ff" green="99" red="66" type="rgb"/>
                 </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="0"/>
@@ -401,7 +401,7 @@
             <Component class="javax.swing.JButton" name="btnDiLam">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="66" red="66" type="rgb"/>
+                  <Color blue="ff" green="99" red="66" type="rgb"/>
                 </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="0"/>

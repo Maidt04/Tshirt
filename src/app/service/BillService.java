@@ -26,7 +26,6 @@ public class BillService {
     PreparedStatement ps = null;
     ResultSet rs = null;
     String sql = null;
-    List<BillModel> listHD = new ArrayList<>();
 
     public List<BillModel> getAll() {
         String sql = "SELECT DISTINCT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien, HOADON.HinhThucThanhToan, HOADON.TrangThai\n"
@@ -53,8 +52,7 @@ public class BillService {
                 listHD.add(hdModel);
             }
             return listHD;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return null;
         }
     }
@@ -86,8 +84,7 @@ public class BillService {
                 );
                 listHD.add(hoaDonModel);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return null;
         }
         return listHD;
@@ -126,40 +123,10 @@ public class BillService {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         return searchResult;
     }
 
-//    public List<BillModel> searchByHoaDon(String IDHD) {
-//        sql = "SELECT        HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien, HOADON.HinhThucThanhToan\n"
-//                + "FROM            HOADON INNER JOIN\n"
-//                + "                         NHANVIEN ON HOADON.ID_NhanVien = NHANVIEN.ID INNER JOIN\n"
-//                + "                         KHACHHANG ON HOADON.ID_KhachHang = KHACHHANG.ID INNER JOIN\n"
-//                + "                         VOUCHER ON HOADON.ID_Voucher = VOUCHER.ID\n"
-//                + "						 WHERE HOADON.ID = ?";
-//        try {
-//            con = DBConnect.getConnection();
-//            ps = con.prepareStatement(sql);
-//            ps.setString(1, IDHD);
-//            rs = ps.executeQuery();
-//            while (rs.next()) {
-//                BillModel hoaDonModel = new BillModel(
-//                        rs.getString(1),
-//                        rs.getDate(2),
-//                        new StaffModel(rs.getString(3)),
-//                        new CustomerModel(rs.getString(4)),
-//                        new VoucherModer(rs.getString(5)),
-//                        rs.getBigDecimal(6),
-//                        rs.getString(7));
-//                listHD.add(hoaDonModel);
-//            }
-//            return listHD;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
 
     public String getNewHD() {
         String newID = "HD001";
@@ -173,8 +140,7 @@ public class BillService {
                 maxID++;
                 newID = "HD" + String.format("%02d", maxID);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
         return newID;
     }
@@ -193,8 +159,7 @@ public class BillService {
             ps.setObject(6, hdm.getTongTien());
             ps.setObject(7, hdm.getHinhThucThanhToan());
             return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return 0;
         }
     }
@@ -213,8 +178,7 @@ public class BillService {
             ps.setObject(5, hdm.getHinhThucThanhToan());
             ps.setObject(7, hdm.getID());
             return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return 0;
         }
     }
@@ -226,8 +190,7 @@ public class BillService {
             ps = con.prepareStatement(sql);
             ps.setString(1, ID);
             return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return 0;
         }
     }
@@ -264,7 +227,6 @@ public class BillService {
             return listHD;
 
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -301,7 +263,6 @@ public class BillService {
             return listHD;
 
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -338,7 +299,6 @@ public class BillService {
             return listHD;
 
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -373,7 +333,6 @@ public class BillService {
             return listHD;
 
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -408,7 +367,6 @@ public class BillService {
             return listHD;
 
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -443,7 +401,6 @@ public class BillService {
             return listHD;
 
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -478,7 +435,6 @@ public class BillService {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         return result;
     }

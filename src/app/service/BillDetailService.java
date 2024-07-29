@@ -60,8 +60,7 @@ public class BillDetailService {
                 listCTHD.add(cthh);
             }
             return listCTHD;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return null;
         }
     }
@@ -107,7 +106,6 @@ public class BillDetailService {
             return listCTHD;
 
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -124,8 +122,7 @@ public class BillDetailService {
                 maxID++;
                 newID = "HDCT" + String.format("%02d", maxID);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
         return newID;
     }
@@ -146,8 +143,7 @@ public class BillDetailService {
             ps.setObject(8, hdct.getSoLuong());
             ps.setObject(9, hdct.getThanhTien());
             return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return 0;
         }
     }
@@ -168,8 +164,7 @@ public class BillDetailService {
             ps.setObject(8, hdct.getThanhTien());
             ps.setObject(9, hdct.getID());
             return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return 0;
         }
     }
@@ -181,8 +176,7 @@ public class BillDetailService {
             ps = con.prepareStatement(sql);
             ps.setString(1, id);
             return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return 0;
         }
     }

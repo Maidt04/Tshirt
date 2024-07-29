@@ -7,6 +7,7 @@ package app.form;
 import app.model.StaffModel;
 import app.service.StaffService;
 import app.tabbed.TabbedForm;
+import app.tabbed.WindowsTabbed;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -23,12 +24,21 @@ import raven.toast.Notifications;
  */
 public class Staff extends TabbedForm {
 
-    private StaffService staffService;
+    @Override
+    public void fromRefresh() {
+        // Tải lại dữ liệu cho form 
+        initTable();
+        loadData();
+        rdoNV.setSelected(true);
+        rdoNam.setSelected(true);
+    }
+
+    private final StaffService staffService = new StaffService();
+    ;
     private DefaultTableModel tableModel;
 
     public Staff() {
         initComponents();
-        staffService = new StaffService();
         initTable();
         loadData();
         rdoNV.setSelected(true);
@@ -64,28 +74,6 @@ public class Staff extends TabbedForm {
                 staff.getMatKhau(),
                 staff.getTrangThai()
             });
-        }
-    }
-
-    private void displayStaffDetails(StaffModel staff) {
-        txtID2.setText(staff.getId());
-        txtHoTen2.setText(staff.getHoTen());
-        txtDiaChi2.setText(staff.getDiaChi());
-        txtSDT2.setText(staff.getSdt());
-        txtEmail2.setText(staff.getEmail());
-        txtNamSinh2.setText(String.valueOf(staff.getNamSinh()));
-        txtMatKhau.setText(staff.getMatKhau());
-
-        if (staff.getGioiTinh().equalsIgnoreCase("Nam")) {
-            rdoNam.setSelected(true);
-        } else {
-            rdoNu.setSelected(true);
-        }
-
-        if (staff.isChucVu()) {
-            rdoQL.setSelected(true);
-        } else {
-            rdoNV.setSelected(true);
         }
     }
 
@@ -312,7 +300,7 @@ public class Staff extends TabbedForm {
 
         jPanel5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        btnThem.setBackground(new java.awt.Color(0, 204, 51));
+        btnThem.setBackground(new java.awt.Color(102, 153, 255));
         btnThem.setText("Thêm Nhân Viên");
         btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -320,7 +308,7 @@ public class Staff extends TabbedForm {
             }
         });
 
-        btnSua.setBackground(new java.awt.Color(0, 153, 153));
+        btnSua.setBackground(new java.awt.Color(102, 153, 255));
         btnSua.setText("Sửa Nhân Viên");
         btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -328,7 +316,7 @@ public class Staff extends TabbedForm {
             }
         });
 
-        btnLamMoi.setBackground(new java.awt.Color(153, 153, 153));
+        btnLamMoi.setBackground(new java.awt.Color(102, 153, 255));
         btnLamMoi.setText("Làm Mới");
         btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -336,7 +324,7 @@ public class Staff extends TabbedForm {
             }
         });
 
-        btnNghiViec.setBackground(new java.awt.Color(255, 0, 0));
+        btnNghiViec.setBackground(new java.awt.Color(102, 153, 255));
         btnNghiViec.setText("Nghỉ Việc");
         btnNghiViec.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -344,7 +332,7 @@ public class Staff extends TabbedForm {
             }
         });
 
-        btnDelete.setBackground(new java.awt.Color(0, 204, 204));
+        btnDelete.setBackground(new java.awt.Color(102, 153, 255));
         btnDelete.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnDelete.setText("Xóa nhân viên");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -353,7 +341,7 @@ public class Staff extends TabbedForm {
             }
         });
 
-        btnDiLam.setBackground(new java.awt.Color(102, 102, 255));
+        btnDiLam.setBackground(new java.awt.Color(102, 153, 255));
         btnDiLam.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnDiLam.setText("Đi làm");
         btnDiLam.addActionListener(new java.awt.event.ActionListener() {
@@ -603,7 +591,7 @@ public class Staff extends TabbedForm {
     }//GEN-LAST:event_rdoNamActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-         if (validateInput()) {
+        if (validateInput()) {
             // Kiểm tra ID đã tồn tại
             if (staffService.checkTrungMa(txtID2.getText())) {
                 Notifications.getInstance().show(Notifications.Type.WARNING, "Mã Nhân Viên đã tồn tại");
@@ -659,21 +647,17 @@ public class Staff extends TabbedForm {
             MessageAlerts.getInstance().showMessage("Xác nhận cập nhật nhân viên",
                     "Bạn có chắc muốn cập nhật thông tin nhân viên này?",
                     MessageAlerts.MessageType.WARNING,
-                    MessageAlerts.YES_NO_OPTION,
-                    new PopupCallbackAction() {
-                @Override
-                public void action(PopupController pc, int option) {
-                    if (option == MessageAlerts.YES_OPTION) {
-                        if (staffService.update(staff, id) > 0) {
-                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Cập nhật nhân viên thành công!");
-                            loadData();
-                            clearForm();
-                        } else {
-                            Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật nhân viên thất bại!");
+                    MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                        if (option == MessageAlerts.YES_OPTION) {
+                            if (staffService.update(staff, id) > 0) {
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS, "Cập nhật nhân viên thành công!");
+                                loadData();
+                                clearForm();
+                            } else {
+                                Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật nhân viên thất bại!");
+                            }
                         }
-                    }
-                }
-            });
+                    });
         }
     }//GEN-LAST:event_btnSuaActionPerformed
 
@@ -687,21 +671,17 @@ public class Staff extends TabbedForm {
             MessageAlerts.getInstance().showMessage("Xác nhận nghỉ việc nhân viên",
                     "Bạn có chắc muốn cho nhân viên này nghỉ việc?",
                     MessageAlerts.MessageType.WARNING,
-                    MessageAlerts.YES_NO_OPTION,
-                    new PopupCallbackAction() {
-                @Override
-                public void action(PopupController pc, int option) {
-                    if (option == MessageAlerts.YES_OPTION) {
-                        if (staffService.updateTrangThai(id) > 0) {
-                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã cập nhật trạng thái nhân viên thành nghỉ việc!");
-                            loadData();
-                            clearForm();
-                        } else {
-                            Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật trạng thái thất bại!");
+                    MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                        if (option == MessageAlerts.YES_OPTION) {
+                            if (staffService.updateTrangThai(id) > 0) {
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã cập nhật trạng thái nhân viên thành nghỉ việc!");
+                                loadData();
+                                clearForm();
+                            } else {
+                                Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật trạng thái thất bại!");
+                            }
                         }
-                    }
-                }
-            });
+                    });
         } else {
             Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng chọn nhân viên cần cập nhật trạng thái!");
         }
@@ -772,7 +752,6 @@ public class Staff extends TabbedForm {
             });
         } else {
             Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng chọn nhân viên cần xóa!");
-            Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng chọn nhân viên cần xóa!");
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -782,21 +761,17 @@ public class Staff extends TabbedForm {
             MessageAlerts.getInstance().showMessage("Xác nhận khôi phục trạng thái",
                     "Bạn có chắc muốn khôi phục trạng thái của nhân viên này thành 'Đang làm việc'?",
                     MessageAlerts.MessageType.WARNING,
-                    MessageAlerts.YES_NO_OPTION,
-                    new PopupCallbackAction() {
-                @Override
-                public void action(PopupController pc, int option) {
-                    if (option == MessageAlerts.YES_OPTION) {
-                        if (staffService.updateActiveTrangThai(id) > 0) {
-                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã cập nhật trạng thái nhân viên thành 'Đang làm việc'!");
-                            loadData();
-                            clearForm();
-                        } else {
-                            Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật trạng thái thất bại!");
+                    MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                        if (option == MessageAlerts.YES_OPTION) {
+                            if (staffService.updateActiveTrangThai(id) > 0) {
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã cập nhật trạng thái nhân viên thành 'Đang làm việc'!");
+                                loadData();
+                                clearForm();
+                            } else {
+                                Notifications.getInstance().show(Notifications.Type.ERROR, "Cập nhật trạng thái thất bại!");
+                            }
                         }
-                    }
-                }
-            });
+                    });
         } else {
             Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng chọn nhân viên cần cập nhật trạng thái!");
         }
@@ -828,7 +803,7 @@ public class Staff extends TabbedForm {
                 || !txtTimKiem.getText().trim().isEmpty()) {
 
             int opt = JOptionPane.showConfirmDialog(this, "Dữ liệu chưa được lưu, bạn có chắc chắn muốn đóng tab ? ", "Close", JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
-            
+
             return opt == JOptionPane.YES_OPTION;
         }
 

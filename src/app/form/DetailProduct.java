@@ -71,9 +71,19 @@ public final class DetailProduct extends TabbedForm {
     private static final int RECORDS_PER_PAGE = 20;
     private int currentPage = 1; // Trang hiện tại
 
-    /**
-     * Creates new form DetailProduct
-     */
+    @Override
+    public void fromRefresh() {
+        // Tải lại dữ liệu cho form 
+        init();
+        fillTable(ctsprp.getAllCTSP());
+        Cbo_ChatLieu();
+        Cbo_KichCo();
+        Cbo_MauSac();
+        Cbo_ThuongHieu();
+        Cbo_SanPham();
+    }
+    
+    
     public DetailProduct() {
         initComponents();
         init();
@@ -1027,7 +1037,7 @@ public final class DetailProduct extends TabbedForm {
         selectedFilterMSItem = (String) cboFilterMauSac.getSelectedItem();
         selectedMauSacID = selectedFilterMSItem;
         List<ColorModel> listMS = msrs.getIDByTenMS(selectedMauSacID);
-        if (listMS.size() > 0) {
+        if (!listMS.isEmpty()) {
             selectedMauSacID = listMS.get(0).getID();
             List<ProductDetailModel> listCTSP = ctsprp.searchByMauSacID(selectedMauSacID);
             fillTable(listCTSP);
@@ -1043,7 +1053,7 @@ public final class DetailProduct extends TabbedForm {
         selectedFilterSizeItem = (String) cboFilterKichThuoc.getSelectedItem();
         selectedSizeID = selectedFilterSizeItem;
         List<SizeModel> listKC = kcrs.getIDByTenKC(selectedSizeID);
-        if (listKC.size() > 0) {
+        if (!listKC.isEmpty()) {
             selectedSizeID = listKC.get(0).getID();
             List<ProductDetailModel> listCTSP = ctsprp.searchBySizeID(selectedSizeID);
             fillTable(listCTSP);
@@ -1075,7 +1085,7 @@ public final class DetailProduct extends TabbedForm {
         selectedFilterThuongHieuItem = (String) cboFilterThuongHieu.getSelectedItem();
         selectedThuongHieuID = selectedFilterThuongHieuItem;
         List<BrandModel> listTH = thrs.getIDByTenTH(selectedThuongHieuID);
-        if (listTH.size() > 0) {
+        if (!listTH.isEmpty()) {
             selectedThuongHieuID = listTH.get(0).getID();
             List<ProductDetailModel> listCTSP = ctsprp.searchByThuonghieuID(selectedThuongHieuID);
             fillTable(listCTSP);
@@ -1111,7 +1121,7 @@ public final class DetailProduct extends TabbedForm {
         selectedFilterSPItem = (String) cboFilterSP.getSelectedItem();
         String selectedSanPham = selectedFilterSPItem;
         List<ProductsModel> listSP = sprs.getIDByTenSP(selectedSanPham);
-        if (listSP.size() > 0) {
+        if (!listSP.isEmpty()) {
             selectedSanPhamID = listSP.get(0).getID();
             List<ProductDetailModel> listCTSP = ctsprp.searchBySanPhamID(selectedSanPhamID);
             fillTable(listCTSP);
@@ -1165,31 +1175,27 @@ public final class DetailProduct extends TabbedForm {
         MessageAlerts.getInstance().showMessage("Xác nhận thêm sản phẩm",
                 "Bạn có chắc muốn thêm sản phẩm này?",
                 MessageAlerts.MessageType.SUCCESS,
-                MessageAlerts.YES_NO_OPTION,
-                new PopupCallbackAction() {
-            @Override
-            public void action(PopupController pc, int option) {
-                if (option == MessageAlerts.YES_OPTION) {
-                    String newID = ctsprp.getNewSPCTID();
-                    chiTietSanPham.setID(newID);
-
-                    if (ctsprp.checkTrungIdCTSP(chiTietSanPham.getID())) {
-                        Notifications.getInstance().show(Notifications.Type.WARNING, "Mã sản phẩm chi tiết đã tồn tại!");
-                        return;
+                MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                    if (option == MessageAlerts.YES_OPTION) {
+                        String newID = ctsprp.getNewSPCTID();
+                        chiTietSanPham.setID(newID);
+                        
+                        if (ctsprp.checkTrungIdCTSP(chiTietSanPham.getID())) {
+                            Notifications.getInstance().show(Notifications.Type.WARNING, "Mã sản phẩm chi tiết đã tồn tại!");
+                            return;
+                        }
+                        
+                        int result = ctsprp.insert(chiTietSanPham);
+                        
+                        if (result > 0) {
+                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Thêm thành công");
+                            fillTable(ctsprp.getAllCTSP());
+                            clear();
+                            refreshData();
+                        } else {
+                            Notifications.getInstance().show(Notifications.Type.ERROR, "Thêm thất bại");
+                        }
                     }
-
-                    int result = ctsprp.insert(chiTietSanPham);
-
-                    if (result > 0) {
-                        Notifications.getInstance().show(Notifications.Type.SUCCESS, "Thêm thành công");
-                        fillTable(ctsprp.getAllCTSP());
-                        clear();
-                        refreshData();
-                    } else {
-                        Notifications.getInstance().show(Notifications.Type.ERROR, "Thêm thất bại");
-                    }
-                }
-            }
         });
     }//GEN-LAST:event_btnAddCTSPActionPerformed
 
@@ -1207,19 +1213,15 @@ public final class DetailProduct extends TabbedForm {
         MessageAlerts.getInstance().showMessage("Xác nhận cập nhật",
                 "Bạn có chắc muốn cập nhật sản phẩm này?",
                 MessageAlerts.MessageType.WARNING,
-                MessageAlerts.YES_NO_OPTION,
-                new PopupCallbackAction() {
-            @Override
-            public void action(PopupController pc, int option) {
-                if (option == MessageAlerts.YES_OPTION) {
-                    ProductDetailModel chiTietSanPham = readForm();
-                    ctsprp.update(chiTietSanPham);
-                    Notifications.getInstance().show(Notifications.Type.SUCCESS, "Cập nhật thành công");
-                    fillTable(ctsprp.getAllCTSP());
-                    clear();
-                    refreshData();
-                }
-            }
+                MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                    if (option == MessageAlerts.YES_OPTION) {
+                        ProductDetailModel chiTietSanPham = readForm();
+                        ctsprp.update(chiTietSanPham);
+                        Notifications.getInstance().show(Notifications.Type.SUCCESS, "Cập nhật thành công");
+                        fillTable(ctsprp.getAllCTSP());
+                        clear();
+                        refreshData();
+                    }
         });
     }//GEN-LAST:event_btnUpdateCTSPActionPerformed
 
@@ -1240,21 +1242,17 @@ public final class DetailProduct extends TabbedForm {
             MessageAlerts.getInstance().showMessage("Xác nhận xóa",
                     "Bạn có chắc muốn xóa sản phẩm này?",
                     MessageAlerts.MessageType.WARNING,
-                    MessageAlerts.YES_NO_OPTION,
-                    new PopupCallbackAction() {
-                @Override
-                public void action(PopupController pc, int option) {
-                    if (option == MessageAlerts.YES_OPTION) {
-                        if (ctsprp.delete(ma) > 0) {
-                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "Xoá thành công!");
-                            refreshData();
-                            fillTable(ctsprp.getAllCTSP());
-                            clear();
-                        } else {
-                            Notifications.getInstance().show(Notifications.Type.WARNING, "Không thể xóa do sản phẩm chi tiết đang được sử dụng ở hóa đơn");
+                    MessageAlerts.YES_NO_OPTION, (PopupController pc, int option) -> {
+                        if (option == MessageAlerts.YES_OPTION) {
+                            if (ctsprp.delete(ma) > 0) {
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS, "Xoá thành công!");
+                                refreshData();
+                                fillTable(ctsprp.getAllCTSP());
+                                clear();
+                            } else {
+                                Notifications.getInstance().show(Notifications.Type.WARNING, "Không thể xóa do sản phẩm chi tiết đang được sử dụng ở hóa đơn");
+                            }
                         }
-                    }
-                }
             });
         } else {
             Notifications.getInstance().show(Notifications.Type.INFO, "Vui lòng chọn một sản phẩm để xóa");

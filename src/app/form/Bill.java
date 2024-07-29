@@ -6,15 +6,11 @@ package app.form;
 
 import app.model.BillDetailModel;
 import app.model.BillModel;
-import app.model.ProductDetailModel;
 import app.service.BillDetailService;
 import app.service.BillService;
-import app.service.ProductDetailService;
 import app.tabbed.TabbedForm;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import raven.toast.Notifications;
@@ -23,18 +19,18 @@ import raven.toast.Notifications;
  *
  * @author ADMIN
  */
-public class Bill extends TabbedForm {
+public final class Bill extends TabbedForm {
+    
+    @Override
+    public void fromRefresh() {
+        this.fillTable(hdsr.getAll());
+    }
 
     private DefaultTableModel model = new DefaultTableModel();
-    private BillService hdsr = new BillService();
-    private BillDetailService cthd = new BillDetailService();
-    private ProductDetailService ctsp = new ProductDetailService();
+    private final BillService hdsr = new BillService();
+    private final BillDetailService cthd = new BillDetailService();
     DefaultComboBoxModel<String> dcb1 = new DefaultComboBoxModel<>();
     DefaultComboBoxModel<String> dcb2 = new DefaultComboBoxModel<>();
-    List<BillModel> listHD = new ArrayList<>();
-    List<ProductDetailModel> listSPCT = new ArrayList<>();
-    private String selectFilterTrangThai = null;
-    private int index = -1;
 
     /**
      * Creates new form Bill
@@ -46,8 +42,6 @@ public class Bill extends TabbedForm {
         loadTrangThai();
         loadHinhThuc();
         this.fillTable(hdsr.getAll());
-        JComboBox<String> cboTrangThai = new JComboBox<>(
-                new String[]{"Chờ thanh toán", "Tất cả", "Đã thanh toán", "Đã hủy"});
     }
 
     void loadTrangThai() {
@@ -83,20 +77,6 @@ public class Bill extends TabbedForm {
         }
     }
 
-    void fillTable2(List<BillDetailModel> listCTHD) {
-        model = (DefaultTableModel) tblHoaDonChiTiet.getModel();
-        // Xóa hết các dòng hiện tại trong bảng
-        model.setRowCount(0);
-        int index = 1;
-        for (BillDetailModel cthd : listCTHD) {
-            cthd.setStt(index++);
-            model.addRow(cthd.toData2());
-        }
-        if (model.getRowCount() > 0) {
-            tblHoaDonChiTiet.scrollRectToVisible(tblHoaDonChiTiet.getCellRect(0, 0, true));
-            tblHoaDonChiTiet.setRowSelectionInterval(0, 0);
-        }
-    }
 
     
 

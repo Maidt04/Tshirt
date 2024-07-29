@@ -164,17 +164,45 @@ public class StaffService {
             return 0;
         }
     }
-  public boolean checklogin(String email , String matKhau){
-      String sql = "select Email , MatKhau from NhanVien where Email = ? and MatKhau= ?";
-        try(Connection conn = DBConnect.getConnection()) {
+
+    public StaffModel checklogin(String email, String matKhau) {
+        String sql = "SELECT * FROM NhanVien WHERE Email = ? AND MatKhau = ?";
+        try (Connection conn = DBConnect.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1,email);
+            ps.setString(1, email);
             ps.setString(2, matKhau);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {                
-                return true;
+            if (rs.next()) {
+                return new StaffModel(
+                        rs.getString("ID"),
+                        rs.getString("HoTen"),
+                        rs.getString("DiaChi"),
+                        rs.getString("SoDienThoai"),
+                        rs.getString("Email"),
+                        rs.getInt("NamSinh"),
+                        rs.getString("GioiTinh"),
+                        rs.getBoolean("ChucVu"),
+                        rs.getString("MatKhau"),
+                        rs.getString("TrangThai")
+                );
             }
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean isAccountInactive(String email) {
+        String sql = "SELECT TrangThai FROM NhanVien WHERE Email = ?";
+        try (Connection conn = DBConnect.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("TrangThai").equals("Nghỉ việc");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
