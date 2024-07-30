@@ -15,7 +15,7 @@ import raven.toast.Notifications;
 
 /**
  *
- * @author dungn
+ * @author maid
  */
 public class ColorNew extends javax.swing.JDialog {
 

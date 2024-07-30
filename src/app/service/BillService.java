@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -126,7 +127,6 @@ public class BillService {
         }
         return searchResult;
     }
-
 
     public String getNewHD() {
         String newID = "HD001";
@@ -405,37 +405,72 @@ public class BillService {
         }
     }
 
-    public List<BillModel> searchByDateRange(java.sql.Date startDate, java.sql.Date endDate) {
-        List<BillModel> result = new ArrayList<>();
-        String sql = "SELECT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien, HOADON.HinhThucThanhToan, HOADON.TrangThai "
+//    public List<BillModel> searchByDateRange(Date startDate, Date endDate) {
+//        List<BillModel> result = new ArrayList<>();
+//        String sql = "SELECT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien, HOADON.HinhThucThanhToan, HOADON.TrangThai "
+//                + "FROM HOADON "
+//                + "INNER JOIN NHANVIEN ON HOADON.ID_NhanVien = NHANVIEN.ID "
+//                + "INNER JOIN KHACHHANG ON HOADON.ID_KhachHang = KHACHHANG.ID "
+//                + "LEFT JOIN VOUCHER ON HOADON.ID_Voucher = VOUCHER.ID "
+//                + "WHERE HOADON.NgayTao BETWEEN ? AND ?";
+//
+//        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+//
+//            ps.setDate(1, startDate);
+//            ps.setDate(2,  endDate);
+//            try (ResultSet rs = ps.executeQuery()) {
+//                while (rs.next()) {
+//                    BillModel billModel = new BillModel(
+//                            rs.getString("ID"),
+//                            rs.getDate("NgayTao"),
+//                            new StaffModel(rs.getString("HoTen")),
+//                            new CustomerModel(rs.getString("TenKhachHang")),
+//                            rs.getBigDecimal("TongTien"),
+//                            new VoucherModer(rs.getString("TenVoucher")),
+//                            rs.getString("HinhThucThanhToan"),
+//                            rs.getString("TrangThai")
+//                    );
+//                    result.add(billModel);
+//                }
+//            }
+//        } catch (SQLException e) {
+//        }
+//        return result;
+//    }
+    public List<BillModel> searchByDateRange(Date startDate, Date endDate) {
+       List<BillModel> result = new ArrayList<>();
+    String sql = "SELECT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien, HOADON.HinhThucThanhToan, HOADON.TrangThai "
                 + "FROM HOADON "
                 + "INNER JOIN NHANVIEN ON HOADON.ID_NhanVien = NHANVIEN.ID "
                 + "INNER JOIN KHACHHANG ON HOADON.ID_KhachHang = KHACHHANG.ID "
                 + "LEFT JOIN VOUCHER ON HOADON.ID_Voucher = VOUCHER.ID "
                 + "WHERE HOADON.NgayTao BETWEEN ? AND ?";
 
-        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+    try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setDate(1, startDate);
-            ps.setDate(2, endDate);
+        ps.setDate(1, startDate);
+        ps.setDate(2, endDate);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    BillModel billModel = new BillModel(
-                            rs.getString("ID"),
-                            rs.getDate("NgayTao"),
-                            new StaffModel(rs.getString("HoTen")),
-                            new CustomerModel(rs.getString("TenKhachHang")),
-                            rs.getBigDecimal("TongTien"),
-                            new VoucherModer(rs.getString("TenVoucher")),
-                            rs.getString("HinhThucThanhToan"),
-                            rs.getString("TrangThai")
-                    );
-                    result.add(billModel);
-                }
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                BillModel billModel = new BillModel(
+                        rs.getString("ID"),
+                        rs.getDate("NgayTao"),
+                        new StaffModel(rs.getString("HoTen")),
+                        new CustomerModel(rs.getString("TenKhachHang")),
+                        rs.getBigDecimal("TongTien"),
+                        new VoucherModer(rs.getString("TenVoucher")),                        
+                        rs.getString("HinhThucThanhToan"),
+                        rs.getString("TrangThai")
+                );
+                result.add(billModel);
             }
-        } catch (SQLException e) {
         }
-        return result;
+    } catch (SQLException e) {
+        // Log or handle the exception as appropriate
+        e.printStackTrace();
     }
+    return result;
+    }
+
 }

@@ -31,7 +31,7 @@ import java.util.List;
  * @author ADMIN
  */
 public class SellService {
-
+    
     private BillDetailService cthdsv = new BillDetailService();
     List<BillDetailModel> listCTHD = new ArrayList<>();
     Connection con = null;
