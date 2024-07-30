@@ -183,3 +183,11 @@ VALUES ('HDCT001', 'HD001', 'SPCT001', 1, 1290000, CURRENT_TIMESTAMP, CURRENT_TI
        ('HDCT003', 'HD002', 'SPCT003', 1, 2390000, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán'),
        ('HDCT004', 'HD002', 'SPCT004', 1, 2890000, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán');
 
+SELECT Id,TenVoucher,SoLuong,LoaiVoucher,MucGiamGia,
+NgayBatDau,NgayKetThuc,MoTa,TrangThai FROM VOUCHER ORDER BY NgayTao DESC
+
+INSERT INTO VOUCHER(ID, TenVoucher, LoaiVoucher, SoLuong, MucGiamGia, NgayBatDau,NgayKetThuc, MoTa, TrangThai VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+
+UPDATE VOUCHER SET TrangThai = N'Không hoạt động' WHERE NgayKetThuc < GETDATE()
+
+SELECT ID, TenVoucher, SoLuong, LoaiVoucher, MucGiamGia, MoTa, NgayBatDau, NgayKetThuc, TrangThai FROM VOUCHER
