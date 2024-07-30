@@ -103,7 +103,11 @@ public class VoucherService {
 
     // Phương thức lấy tất cả các voucher đang hoạt động từ cơ sở dữ liệu
     public List<VoucherModer> getAllVoucherActive() {
-        sql = "SELECT ID, TenVoucher, SoLuong, LoaiVoucher, MucGiamGia, MoTa, NgayBatDau, NgayKetThuc, TrangThai FROM VOUCHER WHERE TrangThai = N'Hoạt động' AND NgayBatDau <= GETDATE() AND NgayKetThuc > GETDATE()";
+        sql = "SELECT ID, TenVoucher, SoLuong, LoaiVoucher, MucGiamGia, MoTa, NgayBatDau, NgayKetThuc, TrangThai "
+                + "FROM VOUCHER "
+                + "WHERE TrangThai = N'Đang Hoạt Động' "
+                + "AND NgayBatDau <= GETDATE() "
+                + "AND NgayKetThuc > GETDATE()";
         List<VoucherModer> listVoucher = new ArrayList<>();
         try {
             con = DBConnect.getConnection();

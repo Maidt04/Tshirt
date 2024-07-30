@@ -625,7 +625,7 @@ public class Voucher extends TabbedForm {
                 @Override
                 public void action(PopupController pc, int option) {
                     if (option == MessageAlerts.YES_OPTION) {
-                        if (sreService.delete(id) > 0) {
+                        if (sreService.delete(id) >= 0) {
                             Notifications.getInstance().show(Notifications.Type.SUCCESS, "Xóa Voucher thành công");
                             FillTable();
                             cleanForm();

@@ -9,7 +9,7 @@ import java.sql.Date;
 
 /**
  *
- * @author dungn
+ * @author ADMIN
  */
 public class VoucherModer {
      public String ID;
