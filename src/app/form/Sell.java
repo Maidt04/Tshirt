@@ -26,10 +26,14 @@ import app.tabbed.WindowsTabbed;
 import app.utils.Auth;
 import java.awt.HeadlessException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -67,7 +71,14 @@ public final class Sell extends TabbedForm {
     private final BigDecimal discountAmount = BigDecimal.ZERO;
     private String voucherID;
     private CustomerNew chonKhachHangDialog;
-
+    public void setSelectedHoaDonID(String id){
+        if (id!=null && id.isEmpty()) {
+            this.selectedHoaDonID=id;
+        }
+    }
+    public String getSelectedHoaDonID() {
+        return this.selectedHoaDonID;
+    }
     @Override
     public void fromRefresh() {
         // Tải lại dữ liệu cho form 
@@ -79,7 +90,7 @@ public final class Sell extends TabbedForm {
         Cbo_Voucher();
         cleanForm();
     }
-
+      
     public Sell() {
         initComponents();
         txtTenKH.setText("Khách bán lẻ");
@@ -153,9 +164,17 @@ public final class Sell extends TabbedForm {
 
     // Hàm để điền dữ liệu vào bảng chi tiết hóa đơn dựa trên ID hóa đơn được chọn
     private void fillChiTietHoaDonTable(String idHoaDon) {
+        if (idHoaDon == null || idHoaDon.trim().isEmpty()) {
+            Notifications.getInstance().show(Notifications.Type.ERROR,"ID hóa đơn không hợp lệ: "+ idHoaDon );
+            return;
+        }
         List<BillDetailModel> chiTietHoaDons = bhrs.searchByHoaDonID(idHoaDon);
         fillToTable(chiTietHoaDons);
         System.out.println("Đã chạy qua hàm fill");
+    }
+    private void clearChiTietHoaDonTable(){
+        DefaultTableModel model= (DefaultTableModel) tblGioHang.getModel();
+        model.setRowCount(0);
     }
 
     private void fillTable(List<ProductDetailModel> listCTSP) {
@@ -309,22 +328,33 @@ public final class Sell extends TabbedForm {
         fillTable(bhrs.getAllCTSP());
         btnOpenKH.setEnabled(true);
         selectedHoaDonID = null;
+        cboVoucher.setSelectedIndex(0);
     }
 
     private void refreshGioHangTable() {
-        // Kiểm tra xem có hàng nào được chọn trong bảng không
-        int rowIndex = tblHoaDon.getSelectedRow();
-        // Kiểm tra xem có hàng nào được chọn không
+        String currentHoaDonID = getSelectedHoaDonID();
+        if (currentHoaDonID != null && !currentHoaDonID.trim().isEmpty()) {
+            int rowIndex= -1;
+            for (int i = 0; i < tblHoaDon.getRowCount(); i++) {
+                if (tblHoaDon.getValueAt(i, 1).toString().equals(currentHoaDonID)) {
+                    rowIndex = i;
+                    break;
+                }
+            }
+        
         if (rowIndex >= 0) {
-            // Lấy id hóa đơn từ hàng được chọn
-            String idHoaDon = tblHoaDon.getValueAt(rowIndex, 1).toString();
-            // Tìm kiếm chi tiết hóa đơn theo id hóa đơn
-            List<BillDetailModel> chiTietHoaDons = bhrs.searchByHoaDonID(idHoaDon);
-            // Đổ dữ liệu vào bảng
+            List<BillDetailModel> chiTietHoaDons = bhrs.searchByHoaDonID(currentHoaDonID);
             fillToTable(chiTietHoaDons);
         } else {
-            // Hiển thị thông báo nếu không có hàng nào được chọn
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn một hàng từ bảng hóa đơn!");
+            Notifications.getInstance().show(Notifications.Type.WARNING,"Hóa đơn đã chọn không còn trong bảng");
+            setSelectedHoaDonID(null);
+            cleanForm();
+        }
+        
+      }
+        else{
+            Notifications.getInstance().show(Notifications.Type.WARNING,"Vui lòng chọn 1 hóa đơn");
+            cleanForm();
         }
     }
 
@@ -332,21 +362,32 @@ public final class Sell extends TabbedForm {
     private void refreshFormData() {
         int selectedRow = tblHoaDon.getSelectedRow();
         if (selectedRow >= 0) {
+            String hoaDonID= tblHoaDon.getValueAt(selectedRow, 1).toString();
+            setSelectedHoaDonID(hoaDonID);
+           
             // Cập nhật lại bảng chi tiết hoá đơn
-            fillChiTietHoaDonTable(selectedHoaDonID);
+            fillChiTietHoaDonTable(getSelectedHoaDonID());
 
             // Cập nhật lại bảng hoá đơn 
             fillTable2(bhrs.getHoaDonChoThanhToan());
             fillTable(bhrs.getAllCTSP());
 
-            // Lấy thông tin từ bảng hoá đơn
-            selectedHoaDonID = tblHoaDon.getValueAt(selectedRow, 1).toString();
-
             // Hiển thị thông tin chi tiết của hoá đơn lên form
             showData(selectedRow);
         } else {
             // Nếu không có hoá đơn nào được chọn, làm sạch form và tắt các nút
-            cleanForm();
+            txtMaHD.setText(null);
+            txtTenNV.setText(Auth.user.getHoTen());
+            txtTenKH.setText("Khách bán lẻ");
+            txtTongTien.setText(null);
+            txtThanhToan.setText(null);
+            txtTienMat.setText(null);
+            txtTienCK.setText(null);
+            txtTienThua.setText(null);
+            txtTimSDT.setText(null);
+            fillTable(bhrs.getAllCTSP());
+            btnOpenKH.setEnabled(true);
+            cboVoucher.setSelectedIndex(0);
             btnHuyDon.setEnabled(true);
             btnSuccesHoaDon.setEnabled(true);
             btnDeleteGH.setEnabled(true);
@@ -375,16 +416,20 @@ public final class Sell extends TabbedForm {
                 String formattedTienThua = currencyFormatter.format(tienThua);
 
                 Notifications.getInstance().show(Notifications.Type.SUCCESS, "Hóa đơn đã được chuyển sang trạng thái 'Đã thanh toán'");
-
-                MessageAlerts.getInstance().showMessage("Thông báo thành công",
+ MessageAlerts.getInstance().showMessage("Thông báo thành công",
                         "Số tiền thừa của quý khách là: " + formattedTienThua,
                         MessageAlerts.MessageType.SUCCESS,
-                        MessageAlerts.OK_OPTION, (PopupController pc, int i) -> {
-                            if (i == MessageAlerts.OK_OPTION) {
-                                System.out.println("Click OK");
+                        MessageAlerts.CLOSED_OPTION, (PopupController pc, int i) -> {
+                            if (i == 0) { // Sử dụng giá trị thực tế cho nút Close
+                                cleanForm(); // Gọi hàm làm sạch biểu mẫu
+                                fillTable(bhrs.getAllCTSP());
+                                fillTable2(bhrs.getHoaDonChoThanhToan());
+                                clearChiTietHoaDonTable();
+                                System.out.println("Click Close");
+                            } else {
+                                System.out.println("Other button clicked: " + i);
                             }
-                });
-
+                        });
                 // Lấy thông tin hóa đơn
                 BillModel hoaDon = bhrs.getHoaDonByID(hoaDonID);
                 String tenVoucher = hoaDon.getTenVoucher().getTenVoucher().trim();
@@ -479,6 +524,8 @@ public final class Sell extends TabbedForm {
             }
         }
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -571,7 +618,7 @@ public final class Sell extends TabbedForm {
         jScrollPane1.setViewportView(tblHoaDon);
 
         cboTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cboTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chờ thanh toán" }));
+        cboTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chờ thanh toán", "Tất cả", "Đã thanh toán", "Đã hủy" }));
         cboTrangThai.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboTrangThaiActionPerformed(evt);
@@ -681,6 +728,11 @@ public final class Sell extends TabbedForm {
         btnDeleteGH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnDeleteGH.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/png/trash.png"))); // NOI18N
         btnDeleteGH.setText("Xóa");
+        btnDeleteGH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteGHActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -858,6 +910,11 @@ public final class Sell extends TabbedForm {
         btnOpenKH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnOpenKH.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/png/customer.png"))); // NOI18N
         btnOpenKH.setText("Chọn");
+        btnOpenKH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOpenKHActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -1205,12 +1262,6 @@ public final class Sell extends TabbedForm {
 
         if (selectedTrangThai.equals("Chờ thanh toán")) {
                         listHD = bhrs.getHoaDonChoThanhToan();
-        } else if (selectedTrangThai.equals("Đã thanh toán")) {
-            listHD = bhrs.getDaThanhToanHoaDon();
-        } else if (selectedTrangThai.equals("Đã hủy")) {
-            listHD = bhrs.getDaHuyHoaDon();
-        } else if (selectedTrangThai.equals("Tất cả")) {
-            listHD = bhrs.getAllHD1();
         } else {
             listHD = bhrs.getHoaDonChoThanhToan();
    
@@ -1221,10 +1272,11 @@ public final class Sell extends TabbedForm {
 
     private void btnHuyDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyDonActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnHuyDonActionPerformed
 
     private void btnTaoHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoHDActionPerformed
-        if (Auth.isLogin()) {
+         if (Auth.isLogin()) {
             StaffModel nhanVien = Auth.user;
             String idNhanVien = nhanVien.getId();
 
@@ -1234,7 +1286,7 @@ public final class Sell extends TabbedForm {
             // Tìm ID khách hàng dựa trên tên khách hàng
             String idKhachHang = bhrs.getIDByTen(tenKH);
 
-            // Nếu không tìm thấy ID từ tên khách hàng, sử dụng ID mặc định là "KH000"
+            // Nếu không tìm thấy ID từ tên khách hàng, sử dụng ID mặc định là "KH00"
             if (idKhachHang == null || idKhachHang.isEmpty()) {
                 idKhachHang = "KH000";
             }
@@ -1244,7 +1296,6 @@ public final class Sell extends TabbedForm {
 
             // Xử lý kết quả
             if (result == 1) {
-                fillTable2(bhrs.getAllHD1());
                 fillTable2(bhrs.getHoaDonChoThanhToan());
                 Notifications.getInstance().show(Notifications.Type.SUCCESS, "Tạo hóa đơn thành công");
             } else {
@@ -1261,6 +1312,12 @@ public final class Sell extends TabbedForm {
 
     private void selectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllActionPerformed
         // TODO add your handling code here:
+        DefaultTableModel model= (DefaultTableModel) tblGioHang.getModel();
+        int rowCount= model.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            model.setValueAt(selectAll.isSelected(), i, 5);
+        
+        }
     }//GEN-LAST:event_selectAllActionPerformed
 
     private void tblCTSPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCTSPMouseClicked
@@ -1638,6 +1695,84 @@ public final class Sell extends TabbedForm {
         cleanForm();
     }//GEN-LAST:event_btnClearActionPerformed
 
+    
+    private void btnOpenKHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenKHActionPerformed
+       chonKhachHangDialog.setVisible(true);
+    }//GEN-LAST:event_btnOpenKHActionPerformed
+
+    private void btnDeleteGHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteGHActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel modelHDCT = (DefaultTableModel) tblGioHang.getModel();
+        int rowCount = modelHDCT.getRowCount();
+        boolean isSelectAllChecked = selectAll.isSelected();
+        System.out.println("Select All activated: " + isSelectAllChecked);
+
+        String tempSelectedHoaDonID = getSelectedHoaDonID();
+
+        if (tempSelectedHoaDonID != null && isSelectAllChecked) {
+            System.out.println("Xóa tất cả các mục");
+
+            List<BillDetailModel> chiTietHoaDons = bhrs.searchByHoaDonID(tempSelectedHoaDonID);
+
+            for (BillDetailModel chiTietHoaDon : chiTietHoaDons) {
+                String maSanPhamChiTiet = chiTietHoaDon.getMactsp().getID();
+                int soLuong = chiTietHoaDon.getSoLuong();
+                int soLuongTonMoi = bhrs.laySoLuongTonByID(maSanPhamChiTiet) + soLuong;
+                bhrs.updateSoLuongTon(maSanPhamChiTiet, soLuongTonMoi);
+            }
+
+            int deleteResult = bhrs.xoaToanBoHoaDonChiTiet(tempSelectedHoaDonID);
+            if (deleteResult <= 0) {
+                Notifications.getInstance().show(Notifications.Type.ERROR, "Không thể xóa toàn bộ chi tiết hóa đơn!");
+                return;
+            }
+
+            boolean isBillUpdated = bhrs.updateBillWhileDeleteALL(tempSelectedHoaDonID);
+
+            // Khôi phục lại giá trị của selectedHoaDonID sau khi xóa
+            selectedHoaDonID = tempSelectedHoaDonID;
+
+            fillChiTietHoaDonTable(selectedHoaDonID);
+            refreshFormData();
+            fillTable2(bhrs.getHoaDonChoThanhToan());
+
+        } else {
+            System.out.println("XChọn sản phẩm để xóa");
+
+            List<String> selectedProductDetailIds = new ArrayList<>();
+
+            for (int i = rowCount - 1; i >= 0; i--) {
+                Boolean isSelected = (Boolean) modelHDCT.getValueAt(i, 5); // Cột 5 là cột "Chọn"
+                if (isSelected != null && isSelected) {
+                    String maSanPhamChiTiet = modelHDCT.getValueAt(i, 0).toString();
+                    System.out.println("Selected Product Detail ID: " + maSanPhamChiTiet);
+                    selectedProductDetailIds.add(maSanPhamChiTiet);
+                }
+            }
+
+            if (selectedProductDetailIds.isEmpty()) {
+                Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng chọn sản phẩm để xóa.");
+                return;
+            }
+
+            for (String maCTSP : selectedProductDetailIds) {
+                BillDetailModel hdct = bhrs.getHDCT_BY_Id_HD_Id_SPCT(tempSelectedHoaDonID, maCTSP);
+                ProductDetailModel spct = bhrs.get_SPCT_BY_Id_SPCT(maCTSP);
+                int updatedQuantity = hdct.getSoLuong() + spct.getSoLuongTon();
+                int updateQuantityResult = bhrs.updateSoLuongTon(maCTSP, updatedQuantity);
+                int deleteHDCTResult = bhrs.xoaHoaDonChiTiet(maCTSP, tempSelectedHoaDonID);
+            }
+
+            bhrs.updateBillWhileDeleteOne(tempSelectedHoaDonID);
+
+        }
+
+        refreshFormData();
+        refreshGioHangTable();
+        Notifications.getInstance().show(Notifications.Type.SUCCESS, "Xóa thành công!");
+        selectAll.setSelected(false);
+    }//GEN-LAST:event_btnDeleteGHActionPerformed
+     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClear;

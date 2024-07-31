@@ -303,6 +303,9 @@
             </Property>
             <Property name="text" type="java.lang.String" value="X&#xf3;a"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteGHActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -674,6 +677,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Ch&#x1ecd;n"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnOpenKHActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

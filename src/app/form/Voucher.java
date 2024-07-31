@@ -33,6 +33,11 @@ public class Voucher extends TabbedForm {
     /**
      * Creates new form Voucher
      */
+     @Override
+    public void fromRefresh() {
+        // Tải lại dữ liệu cho form 
+        this.fillTablef(sreService.getAllVoucher());
+    }
     public Voucher() {
         initComponents();
         dtmm = new DefaultTableModel();

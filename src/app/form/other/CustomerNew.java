@@ -4,18 +4,28 @@
  */
 package app.form.other;
 
+import app.form.Sell;
+import java.awt.Frame;
+import javax.swing.SwingUtilities;
+
+
 /**
  *
  * @author dungn
  */
 public class CustomerNew extends javax.swing.JDialog {
 
+    private Sell parentPanel;
     /**
      * Creates new form CustomerNew
+     * @param parentPanel
+     * @param modal
      */
-    public CustomerNew(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public CustomerNew(Sell parentPanel, boolean modal) {
+        super((Frame)SwingUtilities.getWindowAncestor(parentPanel), modal);
         initComponents();
+        this.parentPanel = parentPanel;
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -338,7 +348,7 @@ public class CustomerNew extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CustomerNew dialog = new CustomerNew(new javax.swing.JFrame(), true);
+                CustomerNew dialog = new CustomerNew((Sell)new javax.swing.JPanel(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

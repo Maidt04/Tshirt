@@ -25,85 +25,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 
 /**
  *
  * @author ADMIN
  */
 public class SellService {
-    
-    private BillDetailService cthdsv = new BillDetailService();
+
+    private final BillDetailService cthdsv = new BillDetailService();
     List<BillDetailModel> listCTHD = new ArrayList<>();
     Connection con = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
     String sql = null;
-
-    public List<BillModel> getAllHD1() {
-        String sql = "SELECT DISTINCT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien, HOADON.HinhThucThanhToan, HOADON.TrangThai\n"
-                + "FROM HOADON\n"
-                + "INNER JOIN NHANVIEN ON HOADON.ID_NhanVien = NHANVIEN.ID\n"
-                + "INNER JOIN KHACHHANG ON HOADON.ID_KhachHang = KHACHHANG.ID\n"
-                + "LEFT JOIN VOUCHER ON HOADON.ID_Voucher = VOUCHER.ID ORDER BY NgayTao DESC";
-
-        try {
-            con = DBConnect.getConnection();
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
-            List<BillModel> listHD = new ArrayList<>();
-            while (rs.next()) {
-                BillModel hdModel = new BillModel(
-                        rs.getString(1),
-                        rs.getDate(2),
-                        new StaffModel(rs.getString(3)),
-                        new CustomerModel(rs.getString(4)),
-                        rs.getBigDecimal(6),
-                        new VoucherModer(rs.getString(5)),
-                        rs.getString(7),
-                        rs.getString(8));
-                listHD.add(hdModel);
-            }
-            return listHD;
-        } catch (SQLException e) {
-            return null;
-        }
-    }
-
-    public List<BillModel> getDaThanhToanHoaDon() {
-        String sql = " SELECT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang,\n"
-                + "VOUCHER.TenVoucher,\n"
-                + "HOADON.TongTien,\n"
-                + "HOADON.HinhThucThanhToan, \n"
-                + "HOADON.TrangThai\n"
-                + "                FROM HOADON\n"
-                + "                INNER JOIN NHANVIEN ON HOADON.ID_NhanVien = NHANVIEN.ID\n"
-                + "                INNER JOIN KHACHHANG ON HOADON.ID_KhachHang = KHACHHANG.ID\n"
-                + "                LEFT JOIN VOUCHER ON HOADON.ID_Voucher = VOUCHER.ID\n"
-                + "               \n"
-                + "                WHERE HOADON.TrangThai = N'Đã thanh toán'\n"
-                + "                GROUP BY HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen, VOUCHER.TenVoucher, HOADON.HinhThucThanhToan, HOADON.TrangThai,HOADON.TongTien ORDER BY NgayTao DESC";
-
-        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-
-            List<BillModel> listHD = new ArrayList<>();
-            while (rs.next()) {
-                BillModel hdModel = new BillModel(
-                        rs.getString(1),
-                        rs.getDate(2),
-                        new StaffModel(rs.getString(3)),
-                        new CustomerModel(rs.getString(4)),
-                        rs.getBigDecimal(6),
-                        new VoucherModer(rs.getString(5)),
-                        rs.getString(7),
-                        rs.getString(8));
-                listHD.add(hdModel);
-            }
-            return listHD;
-
-        } catch (SQLException e) {
-            return null;
-        }
-    }
 
     public List<BillModel> getHoaDonChoThanhToan() {
         String sql
@@ -141,59 +77,41 @@ public class SellService {
         }
     }
 
-    public List<BillModel> getDaHuyHoaDon() {
-        String sql = "SELECT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien AS TongTien, HOADON.HinhThucThanhToan, HOADON.TrangThai\n"
-                + "FROM HOADON\n"
-                + "INNER JOIN NHANVIEN ON HOADON.ID_NhanVien = NHANVIEN.ID\n"
-                + "INNER JOIN KHACHHANG ON HOADON.ID_KhachHang = KHACHHANG.ID\n"
-                + "LEFT JOIN VOUCHER ON HOADON.ID_Voucher = VOUCHER.ID\n"
-                + "WHERE HOADON.TrangThai = N'Đã hủy'";
-
-        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-
-            List<BillModel> listHD = new ArrayList<>();
-            while (rs.next()) {
-                BillModel hdModel = new BillModel(
-                        rs.getString(1),
-                        rs.getDate(2),
-                        new StaffModel(rs.getString(3)),
-                        new CustomerModel(rs.getString(4)),
-                        rs.getBigDecimal(6),
-                        new VoucherModer(rs.getString(5)),
-                        rs.getString(7),
-                        rs.getString(8));
-                listHD.add(hdModel);
-            }
-            return listHD;
-
-        } catch (SQLException e) {
-            return null;
-        }
-    }
-
     public List<BillDetailModel> searchByHoaDonID(String idHoaDon) {
         List<BillDetailModel> chiTietHoaDons = new ArrayList<>();
-        String sql1 = "SELECT SANPHAMCHITIET.ID AS MaSanPhamChiTiet, SANPHAM.TenSanPham AS TenSanPham, SANPHAMCHITIET.GiaBan AS DonGia, HOADONCHITIET.SoLuong AS SoLuong, HOADONCHITIET.ThanhTien AS ThanhTien "
+
+        if (idHoaDon == null || idHoaDon.trim().isEmpty()) {
+            System.err.println("ID hóa đơn không hợp lệ: " + idHoaDon);
+            return chiTietHoaDons; // Trả về danh sách rỗng nếu ID không hợp lệ
+        }
+
+        String sql = "SELECT SANPHAMCHITIET.ID AS MaSanPhamChiTiet, SANPHAM.TenSanPham AS TenSanPham, "
+                + "SANPHAMCHITIET.GiaBan AS DonGia, HOADONCHITIET.SoLuong AS SoLuong, "
+                + "HOADONCHITIET.ThanhTien AS ThanhTien "
                 + "FROM HOADONCHITIET "
                 + "INNER JOIN SANPHAMCHITIET ON HOADONCHITIET.ID_SanPhamChiTiet = SANPHAMCHITIET.ID "
                 + "INNER JOIN SANPHAM ON SANPHAMCHITIET.ID_SanPham = SANPHAM.ID "
                 + "WHERE HOADONCHITIET.ID_HoaDon = ? AND HOADONCHITIET.ID_HoaDon IN (SELECT ID FROM HOADON)";
-        try {
-            con = DBConnect.getConnection();
-            ps = con.prepareStatement(sql1);
+
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setString(1, idHoaDon.trim());
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                BillDetailModel chiTietHoaDon = new BillDetailModel();
-                chiTietHoaDon.setMactsp(new ProductDetailModel(rs.getString("MaSanPhamChiTiet")));
-                chiTietHoaDon.setTenSP(new ProductsModel(rs.getString("TenSanPham")));
-                chiTietHoaDon.setDonGia(new ProductDetailModel(rs.getBigDecimal("DonGia")));
-                chiTietHoaDon.setSoLuong(rs.getInt("SoLuong"));
-                chiTietHoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
-                chiTietHoaDons.add(chiTietHoaDon);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    BillDetailModel chiTietHoaDon = new BillDetailModel();
+                    chiTietHoaDon.setMactsp(new ProductDetailModel(rs.getString("MaSanPhamChiTiet")));
+                    chiTietHoaDon.setTenSP(new ProductsModel(rs.getString("TenSanPham")));
+                    chiTietHoaDon.setDonGia(new ProductDetailModel(rs.getBigDecimal("DonGia")));
+                    chiTietHoaDon.setSoLuong(rs.getInt("SoLuong"));
+                    chiTietHoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
+                    chiTietHoaDons.add(chiTietHoaDon);
+                }
             }
+
         } catch (SQLException e) {
+            // In lỗi ra console để tiện theo dõi
         }
+
         return chiTietHoaDons;
     }
 
@@ -390,21 +308,45 @@ public class SellService {
         return idKhachHang;
     }
 
-    public String getNewHD() {
-        String newID = "HD001";
-        try {
-            sql = "SELECT MAX(CAST(SUBSTRING(ID, 4, LEN(ID)) AS INT)) AS maxID FROM HOADON";
-            con = DBConnect.getConnection();
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                int maxID = rs.getInt("maxID");
-                maxID++;
-                newID = "HD" + String.format("%03d", maxID);
-            }
-        } catch (SQLException e) {
-        }
+    private String generateUniqueID() throws SQLException  {
+        String newID;
+        boolean idExists;
+        do {
+            newID = "HD" + UUID.randomUUID().toString().substring(0, 8);
+            idExists = checkIfIDExists(newID);
+
+        } while (idExists);
         return newID;
+    }
+
+   private boolean checkIfIDExists(String id) throws SQLException {
+        // Câu lệnh SQL để đếm số lượng bản ghi có ID khớp với giá trị đầu vào
+        sql = "SELECT COUNT(*) FROM HOADON WHERE ID = ?";
+
+        // Tạo kết nối đến cơ sở dữ liệu và chuẩn bị câu lệnh SQL
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            // Gán giá trị của tham số ID vào câu lệnh SQL
+            ps.setString(1, id);
+
+            // Thực thi câu lệnh SQL và nhận kết quả
+            try (ResultSet rs = ps.executeQuery()) {
+
+                // Kiểm tra nếu có bản ghi được trả về
+                if (rs.next()) {
+                    // Đọc số lượng bản ghi khớp và kiểm tra nếu lớn hơn 0
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+
+        // Nếu không có bản ghi nào được tìm thấy, trả về false
+        return false;
+    }
+
+    public String getNewHD() throws SQLException {
+        // Tạo ID duy nhất
+        return generateUniqueID();
     }
 
     public int taoHoaDon(String idNhanVien, String idKhachHang) {
@@ -793,6 +735,7 @@ public class SellService {
         }
         return null;
     }
+
     public int updateSoLuongVoucher(String tenVoucher) {
         sql = "UPDATE VOUCHER SET SoLuong = SoLuong - 1 WHERE TenVoucher = ?";
         try {
@@ -802,6 +745,166 @@ public class SellService {
             return ps.executeUpdate();
         } catch (SQLException e) {
             return 0;
+        }
+    }
+
+
+    public int xoaToanBoHoaDonChiTiet(String maHoaDon) {
+        String sql = "DELETE FROM HOADONCHITIET WHERE ID_HoaDon=?";
+        try {
+            con = DBConnect.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, maHoaDon);
+            return ps.executeUpdate();
+
+        } catch (SQLException e) {
+            return 0;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
+    }
+
+    public boolean updateBillWhileDeleteAll(String maHoaDon) {
+        BigDecimal tongTien = BigDecimal.ZERO;
+        String sqlgetTongTien = "SELECT TongTien FROM HOADON WHERE ID=?";
+        String sqlUpdateTongTien = "UPDATE HOADON SET TongTien= 0 WHERE ID=?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement psGet = con.prepareStatement(sqlgetTongTien); PreparedStatement psUpdate = con.prepareStatement(sqlUpdateTongTien)) {
+            psGet.setString(1, maHoaDon);
+            try (ResultSet rs = psGet.executeQuery()) {
+                if (rs.next()) {
+                    tongTien = rs.getBigDecimal("TongTien");
+                }
+            }
+            psUpdate.setString(1, maHoaDon);
+            int rowsAffected = psUpdate.executeUpdate();
+            List<BillDetailModel> chiTietHoaDons = searchByHoaDonID(maHoaDon);
+            for (BillDetailModel chiTietHoaDon : chiTietHoaDons) {
+                updateSoLuongTon(chiTietHoaDon.getMactsp().getID(), laySoLuongTonByID(chiTietHoaDon.getMactsp().getID()) + chiTietHoaDon.getSoLuong());
+            }
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            return false;
+        }
+
+    }
+
+    public BillDetailModel getHDCT_BY_Id_HD_Id_SPCT(String id_HD, String ma_SPCT) {
+        sql = "SELECT * FROM HOADONCHITIET\n"
+                + "WHERE ID_SanPhamChiTiet= ? AND ID_HoaDon=?";
+        BillDetailModel hdct = new BillDetailModel();
+        try {
+            rs = DBConnect.getDataFromQuery(sql, ma_SPCT, id_HD);
+            while (rs.next()) {
+                hdct.setID(rs.getString("ID"));
+                hdct.setSoLuong(rs.getInt("SoLuong"));
+
+            }
+            return hdct;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public ProductDetailModel get_SPCT_BY_Id_SPCT(String id_SPCT) {
+        sql = "SELECT * FROM SANPHAMCHITIET WHERE ID=?";
+        ProductDetailModel spct = new ProductDetailModel();
+        try {
+            rs = DBConnect.getDataFromQuery(sql, id_SPCT);
+            while (rs.next()) {
+                spct.setSoLuongTon(rs.getInt("SoLuongTon"));
+            }
+            return spct;
+
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public int xoaHoaDonChiTiet(String maCTSP, String maHoaDon) {
+        String sql = "DELETE FROM HOADONCHITIET WHERE ID_SanPhamChiTiet=? AND ID_HoaDOn=?";
+        try {
+            con = DBConnect.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, maCTSP);
+            ps.setString(2, maHoaDon);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            return 0;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean updateBillWhileDeleteOne(String maHoaDon) {
+        BigDecimal tongTien = BigDecimal.ZERO;
+        List<BillDetailModel> chiTietHoaDons = searchByHoaDonID(maHoaDon);
+        for (BillDetailModel chiTietHoaDon : chiTietHoaDons) {
+            tongTien = tongTien.add(chiTietHoaDon.getThanhTien());
+        }
+        String sqlUpdateTongTien = "UPDATE HOADON SET TongTien=? WHERE ID=?";
+        try {
+            con = DBConnect.getConnection();
+            ps = con.prepareStatement(sqlUpdateTongTien);
+            ps.setBigDecimal(1, tongTien);
+            ps.setString(2, maHoaDon);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            return false;
+
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
+    }
+
+    public boolean updateBillWhileDeleteALL(String maHoaDon) {
+        BigDecimal tongTien = BigDecimal.ZERO;
+        String sqlGetTongtien = "SELECT TongTien FROM HOADON WHERE ID=?";
+        String sqlUpdateTongTien = "UPDATE HOADON SET TongTien=0 WHERE ID=?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement psGet = con.prepareStatement(sqlGetTongtien); PreparedStatement psUpdate = con.prepareStatement(sqlUpdateTongTien)) {
+            psGet.setString(1, maHoaDon);
+            try (ResultSet rs = psGet.executeQuery()) {
+                if (rs.next()) {
+                    tongTien = rs.getBigDecimal("TongTien");
+                }
+            }
+            psUpdate.setString(1, maHoaDon);
+            int rowsAffected = psUpdate.executeUpdate();
+            List<BillDetailModel> chiTietHoaDons = searchByHoaDonID(maHoaDon);
+            for (BillDetailModel chiTietHoaDon : chiTietHoaDons) {
+                updateSoLuongTon(chiTietHoaDon.getMactsp().getID(), laySoLuongTonByID(chiTietHoaDon.getMactsp().getID()) + chiTietHoaDon.getSoLuong());
+
+            }
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            return false;
         }
     }
 }
