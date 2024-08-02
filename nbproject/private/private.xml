@@ -3,6 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/E:/Tshirt/src/app/service/BillService.java</file>
             <file>file:/E:/Tshirt/src/app/form/Bill.java</file>
             <file>file:/E:/Tshirt/src/app/service/BillDetailService.java</file>
@@ -19,6 +20,13 @@
             <file>file:/E:/Tshirt/src/app/service/SellService.java</file>
             <file>file:/E:/Tshirt/src/app/model/CustomerModel.java</file>
             <file>file:/E:/Tshirt/src/app/form/Products.java</file>
+=======
+            <file>file:/E:/Tshirt/src/app/service/VoucherService.java</file>
+            <file>file:/E:/Tshirt/src/app/form/Voucher.java</file>
+            <file>file:/E:/Tshirt/src/app/form/ProductAttributes.java</file>
+            <file>file:/E:/Tshirt/src/app/service/CustomerService.java</file>
+            <file>file:/E:/Tshirt/src/app/model/CustomerModel.java</file>
+>>>>>>> 1cdea69d5f9d7e17464b19792a117908756f3dab
             <file>file:/E:/Tshirt/src/app/form/Customer.java</file>
         </group>
     </open-files>
