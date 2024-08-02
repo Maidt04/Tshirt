@@ -1,4 +1,4 @@
-CREATE DATABASE DUAN1_TEAM6;
+--CREATE DATABASE DUAN1_TEAM6;
 USE DUAN1_TEAM6;
 
 CREATE TABLE SANPHAM (
@@ -184,19 +184,8 @@ VALUES ('HDCT001', 'HD001', 'SPCT001', 1, 1290000, CURRENT_TIMESTAMP, CURRENT_TI
        ('HDCT003', 'HD002', 'SPCT003', 1, 2390000, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán'),
        ('HDCT004', 'HD002', 'SPCT004', 1, 2890000, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán');
 
-
-SELECT Id,TenVoucher,SoLuong,LoaiVoucher,MucGiamGia,
-NgayBatDau,NgayKetThuc,MoTa,TrangThai FROM VOUCHER ORDER BY NgayTao DESC
-
-INSERT INTO VOUCHER(ID, TenVoucher, LoaiVoucher, SoLuong, MucGiamGia, NgayBatDau,NgayKetThuc, MoTa, TrangThai VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-
-UPDATE VOUCHER SET TrangThai = N'Không hoạt động' WHERE NgayKetThuc < GETDATE()
-
-SELECT ID, TenVoucher, SoLuong, LoaiVoucher, MucGiamGia, MoTa, NgayBatDau, NgayKetThuc, TrangThai FROM VOUCHER
-
 	   INSERT INTO KHACHHANG(ID, HoTen, DiaChi, SoDienThoai, Email, GioiTinh, NgayTao, NgaySua, TrangThai)Values
-('KH00', N'Khách bán lẻ', N'Hà nội', '0123456789', 'khachbanle@gmail.com', N'Nam', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Hoạt động');
+('KH000', N'Khách bán lẻ', N'Hà nội', '0123456789', 'khachbanle@gmail.com', N'Nam', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Hoạt động');
 GO
 INSERT INTO VOUCHER(ID, TenVoucher, SoLuong, LoaiVoucher, MucGiamGia, NgayBatDau, NgayKetThuc, MoTa, NgayTao, NgaySua, TrangThai)
-VALUES ('V00', 'Voucher 0%', 10000, N'Giảm theo phần trăm', 0, '2001-03-18 00:00:00', '2025-06-30 00:00:00', N'Hóa đơn giảm 0%', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đang hoạt động');
-
+VALUES ('V000', 'Voucher 0%', 10000, N'Giảm theo phần trăm', 0, '2001-03-18 00:00:00', '2025-06-30 00:00:00', N'Hóa đơn giảm 0%', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đang hoạt động');
