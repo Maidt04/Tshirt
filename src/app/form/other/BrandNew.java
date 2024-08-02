@@ -10,7 +10,7 @@ import raven.toast.Notifications;
 
 /**
  *
- * @author maid
+ * @author dungn
  */
 public class BrandNew extends javax.swing.JDialog {
 

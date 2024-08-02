@@ -10,7 +10,7 @@ import raven.toast.Notifications;
 
 /**
  *
- * @author maid
+ * @author dungn
  */
 public class MaterialNew extends javax.swing.JDialog {
 

@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -126,73 +125,6 @@ public class BillService {
         } catch (SQLException e) {
         }
         return searchResult;
-    }
-
-    public String getNewHD() {
-        String newID = "HD001";
-        try {
-            sql = "SELECT MAX(CAST(SUBSTRING(ID, 5, LEN(ID)) AS INT)) AS maxID FROM HOADON";
-            con = DBConnect.getConnection();
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                int maxID = rs.getInt("maxID");
-                maxID++;
-                newID = "HD" + String.format("%02d", maxID);
-            }
-        } catch (SQLException e) {
-        }
-        return newID;
-    }
-
-    public int insert(BillModel hdm) {
-        sql = "INSERT INTO HOADON(ID, ID_NhanVien, ID_KhachHang, ID_Voucher, HinhThucThanhToan, TongTien, NgayTao, NgaySua, TrangThai) "
-                + "VALUES(?,?,?,?,?,?,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, N'Đã thanh toán')";
-        try {
-            con = DBConnect.getConnection();
-            ps = con.prepareStatement(sql);
-            ps.setObject(1, hdm.getID());
-            ps.setObject(2, hdm.getNgayTao());
-            ps.setObject(3, hdm.getTenNV().getId());
-            ps.setObject(4, hdm.getTenKH().getId());
-            ps.setObject(5, hdm.getTenVoucher().getID());
-            ps.setObject(6, hdm.getTongTien());
-            ps.setObject(7, hdm.getHinhThucThanhToan());
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            return 0;
-        }
-    }
-
-    public int update(BillModel hdm) {
-        sql = "UPDATE HOADON SET ID_NhanVien = ?, ID_KhachHang = ?, ID_Voucher = ?, HinhThucThanhToan = ?, TongTien = ?, NgayTao = CURRENT_TIMESTAMP, NgaySua = CURRENT_TIMESTAMP, TrangThai = ?\n"
-                + "WHERE ID = ?";
-        try {
-            con = DBConnect.getConnection();
-            ps = con.prepareStatement(sql);
-            ps.setObject(1, hdm.getNgayTao());
-            ps.setObject(2, hdm.getTenNV().getId());
-            ps.setObject(3, hdm.getTenKH().getId());
-            ps.setObject(4, hdm.getTenVoucher().getID());
-            ps.setObject(6, hdm.getTongTien());
-            ps.setObject(5, hdm.getHinhThucThanhToan());
-            ps.setObject(7, hdm.getID());
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            return 0;
-        }
-    }
-
-    public int delete(String ID) {
-        sql = "DELETE FROM HOADON WHERE ID = ?";
-        try {
-            con = DBConnect.getConnection();
-            ps = con.prepareStatement(sql);
-            ps.setString(1, ID);
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            return 0;
-        }
     }
 
     public List<BillModel> getDaThanhToanHoaDon() {
@@ -405,72 +337,37 @@ public class BillService {
         }
     }
 
-//    public List<BillModel> searchByDateRange(Date startDate, Date endDate) {
-//        List<BillModel> result = new ArrayList<>();
-//        String sql = "SELECT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien, HOADON.HinhThucThanhToan, HOADON.TrangThai "
-//                + "FROM HOADON "
-//                + "INNER JOIN NHANVIEN ON HOADON.ID_NhanVien = NHANVIEN.ID "
-//                + "INNER JOIN KHACHHANG ON HOADON.ID_KhachHang = KHACHHANG.ID "
-//                + "LEFT JOIN VOUCHER ON HOADON.ID_Voucher = VOUCHER.ID "
-//                + "WHERE HOADON.NgayTao BETWEEN ? AND ?";
-//
-//        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-//
-//            ps.setDate(1, startDate);
-//            ps.setDate(2,  endDate);
-//            try (ResultSet rs = ps.executeQuery()) {
-//                while (rs.next()) {
-//                    BillModel billModel = new BillModel(
-//                            rs.getString("ID"),
-//                            rs.getDate("NgayTao"),
-//                            new StaffModel(rs.getString("HoTen")),
-//                            new CustomerModel(rs.getString("TenKhachHang")),
-//                            rs.getBigDecimal("TongTien"),
-//                            new VoucherModer(rs.getString("TenVoucher")),
-//                            rs.getString("HinhThucThanhToan"),
-//                            rs.getString("TrangThai")
-//                    );
-//                    result.add(billModel);
-//                }
-//            }
-//        } catch (SQLException e) {
-//        }
-//        return result;
-//    }
-    public List<BillModel> searchByDateRange(Date startDate, Date endDate) {
-       List<BillModel> result = new ArrayList<>();
-    String sql = "SELECT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien, HOADON.HinhThucThanhToan, HOADON.TrangThai "
+    public List<BillModel> searchByDateRange(java.sql.Date startDate, java.sql.Date endDate) {
+        List<BillModel> result = new ArrayList<>();
+        String sql = "SELECT HOADON.ID, HOADON.NgayTao, NHANVIEN.HoTen, KHACHHANG.HoTen AS TenKhachHang, VOUCHER.TenVoucher, HOADON.TongTien, HOADON.HinhThucThanhToan, HOADON.TrangThai "
                 + "FROM HOADON "
                 + "INNER JOIN NHANVIEN ON HOADON.ID_NhanVien = NHANVIEN.ID "
                 + "INNER JOIN KHACHHANG ON HOADON.ID_KhachHang = KHACHHANG.ID "
                 + "LEFT JOIN VOUCHER ON HOADON.ID_Voucher = VOUCHER.ID "
                 + "WHERE HOADON.NgayTao BETWEEN ? AND ?";
 
-    try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setDate(1, startDate);
-        ps.setDate(2, endDate);
+            ps.setDate(1, startDate);
+            ps.setDate(2, endDate);
 
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                BillModel billModel = new BillModel(
-                        rs.getString("ID"),
-                        rs.getDate("NgayTao"),
-                        new StaffModel(rs.getString("HoTen")),
-                        new CustomerModel(rs.getString("TenKhachHang")),
-                        rs.getBigDecimal("TongTien"),
-                        new VoucherModer(rs.getString("TenVoucher")),                        
-                        rs.getString("HinhThucThanhToan"),
-                        rs.getString("TrangThai")
-                );
-                result.add(billModel);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    BillModel billModel = new BillModel(
+                            rs.getString("ID"),
+                            rs.getDate("NgayTao"),
+                            new StaffModel(rs.getString("HoTen")),
+                            new CustomerModel(rs.getString("TenKhachHang")),
+                            rs.getBigDecimal("TongTien"),
+                            new VoucherModer(rs.getString("TenVoucher")),
+                            rs.getString("HinhThucThanhToan"),
+                            rs.getString("TrangThai")
+                    );
+                    result.add(billModel);
+                }
             }
+        } catch (SQLException e) {
         }
-    } catch (SQLException e) {
-        // Log or handle the exception as appropriate
-        e.printStackTrace();
+        return result;
     }
-    return result;
-    }
-
 }

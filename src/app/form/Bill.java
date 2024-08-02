@@ -9,7 +9,6 @@ import app.model.BillModel;
 import app.service.BillDetailService;
 import app.service.BillService;
 import app.tabbed.TabbedForm;
-import java.sql.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -21,7 +20,7 @@ import raven.toast.Notifications;
  * @author ADMIN
  */
 public final class Bill extends TabbedForm {
-
+    
     @Override
     public void fromRefresh() {
         this.fillTable(hdsr.getAll());
@@ -77,6 +76,9 @@ public final class Bill extends TabbedForm {
             tblHoaDon.setRowSelectionInterval(0, 0);
         }
     }
+
+
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -443,21 +445,21 @@ public final class Bill extends TabbedForm {
     }//GEN-LAST:event_cboHinhThucActionPerformed
 
     private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed
-    java.util.Date ngayBDUtil = dateBatDau.getDate();
-    java.util.Date ngayKTUtil = dateKetThuc.getDate(); // giả sử có một trường 'dateKetThuc' tương tự như 'dateBatDau'
+        java.util.Date ngayBD = dateBatDau.getDate();
+        java.util.Date ngayKT = dateKetThuc.getDate();
 
-    java.sql.Date ngayBD = new java.sql.Date(ngayBDUtil.getTime());
-    java.sql.Date ngayKT = new java.sql.Date(ngayKTUtil.getTime());
+        if (ngayBD != null && ngayKT != null) {
+            java.sql.Date sqlNgayBD = new java.sql.Date(ngayBD.getTime());
+            java.sql.Date sqlNgayKT = new java.sql.Date(ngayKT.getTime());
+            List<BillModel> listHD = hdsr.searchByDateRange(sqlNgayBD, sqlNgayKT);
+            fillTable(listHD);
 
-    System.out.println(ngayBD);
-    System.out.println(ngayKT);
-    List<BillModel> listHD = hdsr.searchByDateRange(ngayBD, ngayKT);
-    
-    // In kết quả để kiểm tra
-    for (BillModel bill : listHD) {
-        System.out.println(bill);
-    }
-        fillTable(listHD);
+            if (listHD.isEmpty()) {
+                Notifications.getInstance().show(Notifications.Type.ERROR, "Không tìm thấy hóa đơn trong khoảng thời gian này.");
+            }
+        } else {
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng chọn đầy đủ ngày bắt đầu và ngày kết thúc");
+        }
     }//GEN-LAST:event_btnLocActionPerformed
 
     private void jPanel2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel2KeyReleased

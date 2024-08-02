@@ -5,9 +5,11 @@
 package app.form.other;
 
 import app.form.Sell;
+import app.model.CustomerModel;
+import java.awt.Dimension;
 import java.awt.Frame;
 import javax.swing.SwingUtilities;
-
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,17 +17,34 @@ import javax.swing.SwingUtilities;
  */
 public class CustomerNew extends javax.swing.JDialog {
 
-    private Sell parentPanel;
+    private DefaultTableModel model = new DefaultTableModel();
+//    private KhachHangService khrs = new KhachHangService();
+    private CustomerModel selectedKhachHang;
+    private String tenKhachHangChon; // Biến để lưu trữ tên khách hàng được chọn
+    private Sell formBanHangPanel;
+
     /**
      * Creates new form CustomerNew
-     * @param parentPanel
+     *
+     * @param formBanHangPanel
      * @param modal
      */
-    public CustomerNew(Sell parentPanel, boolean modal) {
-        super((Frame)SwingUtilities.getWindowAncestor(parentPanel), modal);
+    public CustomerNew(Sell formBanHangPanel, boolean modal) {
+        super((Frame) SwingUtilities.getWindowAncestor(formBanHangPanel), modal);
+        this.formBanHangPanel = formBanHangPanel;
         initComponents();
-        this.parentPanel = parentPanel;
         this.setLocationRelativeTo(null);
+        setSize(new Dimension(1100, 600));
+        setTitle("Khách hàng");
+    }
+
+    private void chonKH() {
+        int row = this.tblKH.getSelectedRow();
+        if (row >= 0) {
+            String tenKH = tblKH.getValueAt(row, 2).toString().trim();
+            formBanHangPanel.updateTenKhachHang(tenKH);
+            this.dispose(); // Đóng cửa sổ ChonKhachHangDiaLog
+        }
     }
 
     /**
@@ -303,7 +322,7 @@ public class CustomerNew extends javax.swing.JDialog {
     }//GEN-LAST:event_tblKHMousePressed
 
     private void btnChonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChonActionPerformed
-
+        chonKH();
     }//GEN-LAST:event_btnChonActionPerformed
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
@@ -344,11 +363,12 @@ public class CustomerNew extends javax.swing.JDialog {
             java.util.logging.Logger.getLogger(CustomerNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CustomerNew dialog = new CustomerNew((Sell)new javax.swing.JPanel(), true);
+                CustomerNew dialog = new CustomerNew((Sell) new javax.swing.JPanel(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

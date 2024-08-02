@@ -21,9 +21,6 @@ public class BillModel {
     public String hinhThucThanhToan;
     public String trangThai;
     private int stt;
-    private Date ngayBD;
-    private Date ngayKT;
-    
 
     public BillModel(String ID, Date ngayTao, BigDecimal tongTien, String hinhThucThanhToan, String trangThai, int stt) {
         this.ID = ID;
@@ -35,22 +32,6 @@ public class BillModel {
     }
 
     public BillModel() {
-    }
-
-    public Date getNgayBD() {
-        return ngayBD;
-    }
-
-    public void setNgayBD(Date ngayBD) {
-        this.ngayBD = ngayBD;
-    }
-
-    public Date getNgayKT() {
-        return ngayKT;
-    }
-
-    public void setNgayKT(Date ngayKT) {
-        this.ngayKT = ngayKT;
     }
 
     public BillModel(String ID, Date ngayTao, StaffModel tenNV, CustomerModel tenKH, BigDecimal tongTien, VoucherModer tenVoucher, String hinhThucThanhToan, String trangThai) {

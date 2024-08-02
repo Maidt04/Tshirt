@@ -26,6 +26,15 @@ public class CustomerModel {
         this.gioiTinh = gioiTinh;
         this.stt = stt;
     }
+    
+    public CustomerModel(String id, String ten, String sdt, String diachi, String email, String gioiTinh) {
+        this.id = id;
+        this.ten = ten;
+        this.sdt = sdt;
+        this.diachi = diachi;
+        this.email = email;
+        this.gioiTinh = gioiTinh;
+    }
 
     public CustomerModel() {
     }

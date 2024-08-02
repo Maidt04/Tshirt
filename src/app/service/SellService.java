@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 /**
  *
  * @author ADMIN
@@ -308,18 +307,46 @@ public class SellService {
         return idKhachHang;
     }
 
-    private String generateUniqueID() throws SQLException  {
+    private String generateUniqueID() throws SQLException {
         String newID;
         boolean idExists;
+
         do {
             newID = "HD" + UUID.randomUUID().toString().substring(0, 8);
             idExists = checkIfIDExists(newID);
-
         } while (idExists);
+
         return newID;
     }
 
-   private boolean checkIfIDExists(String id) throws SQLException {
+    /**
+     * Kiểm tra xem ID đã tồn tại trong bảng HOADON hay chưa.
+     *
+     * Hàm này thực hiện truy vấn cơ sở dữ liệu để kiểm tra sự tồn tại của một
+     * ID cụ thể trong bảng `HOADON`. Nếu ID đã tồn tại, hàm sẽ trả về true;
+     * ngược lại, trả về false.
+     *
+     * Quy trình thực hiện: 1. Tạo câu lệnh SQL để đếm số lượng bản ghi có ID
+     * khớp với giá trị đầu vào. 2. Kết nối đến cơ sở dữ liệu thông qua
+     * `DBConnect.getConnection()`. 3. Tạo một đối tượng `PreparedStatement` với
+     * * câu lệnh SQL. 4. Gán giá trị của tham số ID vào câu lệnh SQL để đảm bảo
+     * an toàn khỏi SQL Injection. 5. Thực thi câu lệnh SQL và nhận kết quả bằng
+     * `executeQuery()`. 6. Kiểm tra xem có bất kỳ bản ghi nào được trả về từ
+     * truy vấn: - Nếu có, đọc giá trị đếm được và kiểm tra xem nó có lớn hơn 0
+     * hay không. - Nếu có, nghĩa là ID đã tồn tại, và hàm trả về true. - Nếu
+     * không có bản ghi nào, nghĩa là ID chưa tồn tại, và hàm trả về false. 7.
+     * Đóng các đối tượng `ResultSet`, `PreparedStatement`, và `Connection` sau
+     * khi hoàn thành.
+     *
+     * COUNT(*): Một hàm tổng hợp trong SQL được sử dụng để đếm số lượng bản ghi
+     * trong kết quả truy vấn. Dấu * có nghĩa là đếm tất cả các bản ghi mà truy
+     * vấn trả về..
+     *
+     * @return true nếu ID tồn tại trong bảng `HOADON`, false nếu không.
+     * @throws SQLException nếu có lỗi xảy ra khi thực hiện truy vấn cơ sở dữ
+     * liệu.
+     */
+    private boolean checkIfIDExists(String id) throws SQLException {
         // Câu lệnh SQL để đếm số lượng bản ghi có ID khớp với giá trị đầu vào
         sql = "SELECT COUNT(*) FROM HOADON WHERE ID = ?";
 
@@ -356,15 +383,15 @@ public class SellService {
 
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setObject(1, getNewHD()); // Lấy ID mới cho hóa đơn
-            ps.setObject(2, idNhanVien);
+            ps.setObject(2, idNhanVien);// Dùng id nhân viên được truyền vào 
             ps.setObject(3, idKhachHang); // Sử dụng ID của khách hàng được truyền vào
             ps.setObject(4, hinhThucThanhToan);
             ps.setObject(5, 0); // Giá trị tổng tiền ban đầu
 
             return ps.executeUpdate();
         } catch (SQLException e) {
-            return 0;
         }
+        return 0;
     }
 
     public BigDecimal getGiaBanByMaCTSP(String maCTSP) {
@@ -748,15 +775,13 @@ public class SellService {
         }
     }
 
-
     public int xoaToanBoHoaDonChiTiet(String maHoaDon) {
-        String sql = "DELETE FROM HOADONCHITIET WHERE ID_HoaDon=?";
+        String sql = "DELETE FROM HOADONCHITIET WHERE ID_HoaDon = ?";
         try {
             con = DBConnect.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, maHoaDon);
             return ps.executeUpdate();
-
         } catch (SQLException e) {
             return 0;
         } finally {
@@ -767,46 +792,54 @@ public class SellService {
                 if (con != null) {
                     con.close();
                 }
-            } catch (SQLException e) {
+            } catch (SQLException ex) {
             }
         }
     }
 
-    public boolean updateBillWhileDeleteAll(String maHoaDon) {
-        BigDecimal tongTien = BigDecimal.ZERO;
-        String sqlgetTongTien = "SELECT TongTien FROM HOADON WHERE ID=?";
-        String sqlUpdateTongTien = "UPDATE HOADON SET TongTien= 0 WHERE ID=?";
-        try (Connection con = DBConnect.getConnection(); PreparedStatement psGet = con.prepareStatement(sqlgetTongTien); PreparedStatement psUpdate = con.prepareStatement(sqlUpdateTongTien)) {
+    public boolean updateBillWhileDeleteALL(String maHoaDon) {
+        BigDecimal tongTien = BigDecimal.ZERO; // Đặt giá trị mặc định là 0
+        String sqlGetTongTien = "SELECT TongTien FROM HOADON WHERE ID = ?";
+        String sqlUpdateTongTien = "UPDATE HOADON SET TongTien = 0 WHERE ID = ?";
+
+        try (
+                Connection con = DBConnect.getConnection(); PreparedStatement psGet = con.prepareStatement(sqlGetTongTien); PreparedStatement psUpdate = con.prepareStatement(sqlUpdateTongTien)) {
+
+            // Lấy giá trị tổng tiền hiện tại từ cơ sở dữ liệu
             psGet.setString(1, maHoaDon);
             try (ResultSet rs = psGet.executeQuery()) {
                 if (rs.next()) {
                     tongTien = rs.getBigDecimal("TongTien");
                 }
             }
+
+            // Tiến hành cập nhật tổng tiền thành 0 cho hóa đơn
             psUpdate.setString(1, maHoaDon);
             int rowsAffected = psUpdate.executeUpdate();
+
+            // Cập nhật số lượng tồn của sản phẩm chi tiết
             List<BillDetailModel> chiTietHoaDons = searchByHoaDonID(maHoaDon);
             for (BillDetailModel chiTietHoaDon : chiTietHoaDons) {
-                updateSoLuongTon(chiTietHoaDon.getMactsp().getID(), laySoLuongTonByID(chiTietHoaDon.getMactsp().getID()) + chiTietHoaDon.getSoLuong());
+                updateSoLuongTon(chiTietHoaDon.getMactsp().getID(),
+                        laySoLuongTonByID(chiTietHoaDon.getMactsp().getID()) + chiTietHoaDon.getSoLuong());
             }
-            return rowsAffected > 0;
 
+            return rowsAffected > 0; // Trả về true nếu cập nhật thành công
         } catch (SQLException e) {
             return false;
         }
-
     }
 
+    // Lấy HĐCT theo ID_SPCT 
     public BillDetailModel getHDCT_BY_Id_HD_Id_SPCT(String id_HD, String ma_SPCT) {
-        sql = "SELECT * FROM HOADONCHITIET\n"
-                + "WHERE ID_SanPhamChiTiet= ? AND ID_HoaDon=?";
+        sql = "select * from HOADONCHITIET\n"
+                + "WHERE ID_SanPhamChiTiet = ? AND ID_HoaDon = ?";
         BillDetailModel hdct = new BillDetailModel();
         try {
             rs = DBConnect.getDataFromQuery(sql, ma_SPCT, id_HD);
             while (rs.next()) {
-                hdct.setID(rs.getString("ID"));
-                hdct.setSoLuong(rs.getInt("SoLuong"));
-
+                hdct.setID(rs.getString("ID"));//ID_SPCT
+                hdct.setSoLuong(rs.getInt("SoLuong"));//SL_SP
             }
             return hdct;
         } catch (SQLException e) {
@@ -814,8 +847,10 @@ public class SellService {
         }
     }
 
+    // Lấy ra SPCT dựa vào ID_SPCT
     public ProductDetailModel get_SPCT_BY_Id_SPCT(String id_SPCT) {
-        sql = "SELECT * FROM SANPHAMCHITIET WHERE ID=?";
+        sql = "select * from SANPHAMCHITIET\n"
+                + "where ID = ?";
         ProductDetailModel spct = new ProductDetailModel();
         try {
             rs = DBConnect.getDataFromQuery(sql, id_SPCT);
@@ -823,14 +858,13 @@ public class SellService {
                 spct.setSoLuongTon(rs.getInt("SoLuongTon"));
             }
             return spct;
-
         } catch (SQLException e) {
             return null;
         }
     }
 
     public int xoaHoaDonChiTiet(String maCTSP, String maHoaDon) {
-        String sql = "DELETE FROM HOADONCHITIET WHERE ID_SanPhamChiTiet=? AND ID_HoaDOn=?";
+        String sql = "DELETE FROM HOADONCHITIET WHERE ID_SanPhamChiTiet = ? AND ID_HoaDon = ?";
         try {
             con = DBConnect.getConnection();
             ps = con.prepareStatement(sql);
@@ -847,30 +881,36 @@ public class SellService {
                 if (con != null) {
                     con.close();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
         }
     }
 
     public boolean updateBillWhileDeleteOne(String maHoaDon) {
         BigDecimal tongTien = BigDecimal.ZERO;
+
+        // Lấy danh sách chi tiết hóa đơn còn lại
         List<BillDetailModel> chiTietHoaDons = searchByHoaDonID(maHoaDon);
+
+        // Tính tổng tiền của các chi tiết hóa đơn còn lại
         for (BillDetailModel chiTietHoaDon : chiTietHoaDons) {
             tongTien = tongTien.add(chiTietHoaDon.getThanhTien());
         }
-        String sqlUpdateTongTien = "UPDATE HOADON SET TongTien=? WHERE ID=?";
+
+        // Cập nhật tổng tiền của hóa đơn
+        String sqlUpdateTongTien = "UPDATE HOADON SET TongTien = ? WHERE ID = ?";
         try {
             con = DBConnect.getConnection();
             ps = con.prepareStatement(sqlUpdateTongTien);
             ps.setBigDecimal(1, tongTien);
             ps.setString(2, maHoaDon);
             int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
+            return rowsAffected > 0; // Trả về true nếu cập nhật thành công
         } catch (SQLException e) {
             return false;
-
         } finally {
+            // Đóng kết nối
             try {
                 if (ps != null) {
                     ps.close();
@@ -878,33 +918,56 @@ public class SellService {
                 if (con != null) {
                     con.close();
                 }
-            } catch (SQLException e) {
+            } catch (SQLException ex) {
             }
         }
     }
 
-    public boolean updateBillWhileDeleteALL(String maHoaDon) {
-        BigDecimal tongTien = BigDecimal.ZERO;
-        String sqlGetTongtien = "SELECT TongTien FROM HOADON WHERE ID=?";
-        String sqlUpdateTongTien = "UPDATE HOADON SET TongTien=0 WHERE ID=?";
-        try (Connection con = DBConnect.getConnection(); PreparedStatement psGet = con.prepareStatement(sqlGetTongtien); PreparedStatement psUpdate = con.prepareStatement(sqlUpdateTongTien)) {
-            psGet.setString(1, maHoaDon);
-            try (ResultSet rs = psGet.executeQuery()) {
-                if (rs.next()) {
-                    tongTien = rs.getBigDecimal("TongTien");
-                }
-            }
-            psUpdate.setString(1, maHoaDon);
-            int rowsAffected = psUpdate.executeUpdate();
-            List<BillDetailModel> chiTietHoaDons = searchByHoaDonID(maHoaDon);
-            for (BillDetailModel chiTietHoaDon : chiTietHoaDons) {
-                updateSoLuongTon(chiTietHoaDon.getMactsp().getID(), laySoLuongTonByID(chiTietHoaDon.getMactsp().getID()) + chiTietHoaDon.getSoLuong());
+    public boolean huyHDByID(String trangThai, String idHD) {
+        sql = "UPDATE HOADON SET TrangThai = ? WHERE ID = ?";
+        boolean isSuccess = false; // Biến để xác định việc cập nhật thành công hay không
 
-            }
-            return rowsAffected > 0;
+        try {
+            // Mở kết nối đến cơ sở dữ liệu
+            con = DBConnect.getConnection();
 
+            // Chuẩn bị câu lệnh SQL
+            ps = con.prepareStatement(sql);
+
+            // Thiết lập tham số cho câu lệnh SQL
+            ps.setString(1, trangThai);
+            ps.setString(2, idHD);
+
+            // Thực thi câu lệnh SQL và nhận số dòng được cập nhật
+            int rowsUpdated = ps.executeUpdate();
+
+            // Nếu có ít nhất một dòng được cập nhật thành công, đặt isSuccess thành true
+            isSuccess = rowsUpdated > 0;
         } catch (SQLException e) {
-            return false;
+            e.printStackTrace();
         }
+        return isSuccess;
+    }
+
+    public CustomerModel findBySDT(String sdt) {
+        sql = "SELECT ID, HoTen, SoDienThoai, DiaChi, Email, GioiTinh FROM KHACHHANG WHERE SoDienThoai = ?";
+        try {
+            con = DBConnect.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, sdt);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return new CustomerModel(
+                        rs.getString(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6)
+                );
+            }
+        } catch (SQLException e) {
+        }
+        return null;
     }
 }
