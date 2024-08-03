@@ -38,7 +38,7 @@ public class Customer extends TabbedForm {
 
     private void initTable() {
         dtm = (DefaultTableModel) tblKachHang.getModel();
-        String[] columnNames = {"STT", "ID", "Tên Khách Hàng", "Số Điện Thoại", "Giới Tính", "Email", "Địa Chỉ", "Trạng Thái"};
+        String[] columnNames = {"STT", "ID", "Tên Khách Hàng", "Số Điện Thoại", "Giới Tính", "Email", "Địa Chỉ"};
         dtm.setColumnIdentifiers(columnNames);
     }
 
@@ -56,8 +56,7 @@ public class Customer extends TabbedForm {
                 cus.getSdt(),
                 cus.getGioiTinh(),
                 cus.getEmail(),
-                cus.getDiachi(),
-                cus.getTrangThai()
+                cus.getDiachi()
             });
         }
 
@@ -123,7 +122,8 @@ public class Customer extends TabbedForm {
         custm.setSdt(txtSDT.getText().trim());
         custm.setEmail(txtEmail.getText().trim());
         custm.setGioiTinh(rdNam.isSelected() ? "Nam" : "Nữ");
-        custm.setTrangThai(comboxTrangThai.getSelectedItem().toString());
+        String TrangThai = "Hoạt Động";
+        custm.setTrangThai(TrangThai);
         return custm;
     }
 
@@ -200,8 +200,6 @@ public class Customer extends TabbedForm {
         txtSDT = new javax.swing.JTextField();
         txtEmail = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        comboxTrangThai = new javax.swing.JComboBox<>();
-        jLabel11 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -246,15 +244,6 @@ public class Customer extends TabbedForm {
         jLabel9.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
         jLabel9.setText("Thông Tin Khách Hàng");
 
-        comboxTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hoạt Động", "Không Hoạt Động" }));
-        comboxTrangThai.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboxTrangThaiActionPerformed(evt);
-            }
-        });
-
-        jLabel11.setText("Trạng Thái");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -282,14 +271,12 @@ public class Customer extends TabbedForm {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel11))
+                            .addComponent(jLabel6))
                         .addGap(24, 24, 24)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtDiaChi)
                             .addComponent(txtSDT)
-                            .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
-                            .addComponent(comboxTrangThai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE))))
                 .addContainerGap(110, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -316,11 +303,7 @@ public class Customer extends TabbedForm {
                     .addComponent(rdNam)
                     .addComponent(rdNu)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(comboxTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
 
         add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 1650, 320));
@@ -576,7 +559,8 @@ public class Customer extends TabbedForm {
             }
             txtEmail.setText(tblKachHang.getValueAt(row, 5).toString().trim());
             txtDiaChi.setText(tblKachHang.getValueAt(row, 6).toString().trim());
-            comboxTrangThai.setSelectedItem(tblKachHang.getValueAt(row, 7).toString().trim());
+            
+            
 
             showHoaDonForSelectedKhachHang();
         }
@@ -629,10 +613,6 @@ public class Customer extends TabbedForm {
         }
     }//GEN-LAST:event_txtTimKiemKeyReleased
 
-    private void comboxTrangThaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboxTrangThaiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_comboxTrangThaiActionPerformed
-
     private void txtTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTimKiemActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTimKiemActionPerformed
@@ -640,14 +620,12 @@ public class Customer extends TabbedForm {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JComboBox<String> comboxTrangThai;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
