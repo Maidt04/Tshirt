@@ -56,8 +56,7 @@ public class Customer extends TabbedForm {
                 cus.getSdt(),
                 cus.getGioiTinh(),
                 cus.getEmail(),
-                cus.getDiachi(),
-                
+                cus.getDiachi()
             });
         }
 
