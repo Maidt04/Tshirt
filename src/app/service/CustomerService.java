@@ -157,6 +157,33 @@ public class CustomerService {
         }
         return listCusstomer;
     }
+    
+     public List<CustomerModel> searchCustomerSDT(String keyword) {
+        sql = "SELECT * FROM KHACHHANG WHERE LOWER(SoDienThoai) LIKE ?";
+        List<CustomerModel> listCusstomer = new ArrayList<>();
+        try {
+            con = DBConnect.getConnection();
+            ps = con.prepareStatement(sql);
+            String likeKeyword = "%" + keyword + "%";
+            ps.setString(1, likeKeyword);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                CustomerModel cuss = new CustomerModel(
+                        rs.getString("ID"),
+                        rs.getString("HoTen"),
+                        rs.getString("SoDienThoai"),
+                        rs.getString("DiaChi"),
+                        rs.getString("Email"),
+                        rs.getString("GioiTinh"),
+                        rs.getString("TrangThai"));
+
+                listCusstomer.add(cuss);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listCusstomer;
+    }
 
     public boolean checkTrungID(String id) {
         sql = "SELECT COUNT(*) AS count FROM KHACHHANG WHERE ID = ?";
